@@ -1,0 +1,198 @@
+.topbar-wrapper {
+    position: fixed;
+    left: 0%;
+    top: 0%;
+    right: 0%;
+    bottom: auto;
+    z-index: 99;
+    padding: 35px 30px 25px 310px;
+    background-color: #fff;
+}
+
+.header-content {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -webkit-justify-content: space-between;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+.profile-wrapper {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+.profile-image {
+    margin-right: 10px;
+}
+
+.profile-image img {
+    width: 42px;
+    height: 42px;
+    border-radius: 100px;
+}
+
+.welcome {
+    color: #00162f;
+    font-size: 12px;
+    line-height: 22px;
+}
+
+.mobile-menu-bar-wrap {
+    display: none;
+    width: 40px;
+    height: 40px;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    font-family: 'Fa solid 900', sans-serif;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.dropdown-button {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    padding: 0px;
+}
+
+.dropdown-button-text {
+    margin-right: 30px;
+    color: #00162f;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.profile-image {
+    margin-right: 10px;
+}
+
+.profile-image-content {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: end;
+    -webkit-align-items: flex-end;
+    -ms-flex-align: end;
+    align-items: flex-end;
+    cursor: pointer;
+}
+
+.dropdown-button-text {
+    margin-right: 30px;
+    color: #00162f;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.dropdown-icon {
+    top: 21px;
+    margin-right: 0px;
+    color: #00162f;
+    font-size: 15px;
+}
+
+.profile-dropdown-list {
+    margin-top: 10px;
+}
+
+.profile-dropdown-list.w--open {
+    margin-top: 10px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #e9edf5;
+    border-radius: 6px;
+    background-color: #fff;
+    box-shadow: 1px 1px 4px 0 #e8f0f5;
+}
+
+.side-navbar-wrapper {
+    position: fixed;
+    left: 0%;
+    top: 0%;
+    right: auto;
+    bottom: 0%;
+    z-index: 999;
+    overflow: auto;
+    width: 250px;
+    max-width: 250px;
+    min-height: 100vh;
+    margin-top: 25px;
+    margin-left: 30px;
+    padding: 25px 12px;
+    border-radius: 10px;
+    background-image: url("https://assets.website-files.com/61f7c38c8268bb1cdf5a1316/61f7cef5e9db8a52bf438cac_Side-Nav-Bg.png");
+    background-position: 50% 50%;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.sidebar-logo-wrapper {
+    margin-bottom: 32px;
+    padding-right: 20px;
+    padding-left: 20px;
+}
+
+.mobile-menu-close {
+    display: none;
+}
+
+.single-nav-link-wrapper {
+    position: relative;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    margin-top: 3px;
+    padding: 12px 20px 14px;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    border-radius: 10px;
+    -webkit-transition: color 350ms ease, background-color 350ms ease;
+    transition: color 350ms ease, background-color 350ms ease;
+    color: #7f94bc;
+    font-weight: 400;
+}
+
+.single-nav-link-wrapper:hover {
+    background-color: rgba(4, 20, 55, 0.65);
+    color: #fff;
+}
+
+.single-nav-link-wrapper.w--current {
+    background-color: #041437;
+    color: #fff;
+}
+
+.single-nav-link-text {
+    margin-left: 18px;
+    text-transform: capitalize;
+}
+
+
+/* ::-webkit-scrollbar {
+    display: none;
+} */
