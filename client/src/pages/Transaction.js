@@ -25,13 +25,6 @@ const Transaction = () => {
 
         })
     }
-
-    const teacherstyle = {
-        marginTop: "150px",
-        display: "flex",
-        alignItems: "flexStart",
-        marginLeft: "310px"
-    }
     const handleChange = (event) => {
         settracstype(event.target.value);
     }
@@ -49,7 +42,7 @@ const Transaction = () => {
                 <select value={selectedStudentId} onChange={selectChange}>
                     {students.map((student) => (
                         <option key={student.id} value={student.id} >
-                            {student.Name}
+                            {student.name}
 
                             {console.log(student.id)}
                         </option>
@@ -62,9 +55,9 @@ const Transaction = () => {
                     <div>
                         <h2>Selected Student</h2>
                         <p>ID: {selectedStudent.id}</p>
-                        <p>Fees: {selectedStudent.Fee}</p>
-                        <p>Class: {selectedStudent.Class}</p>
-                        <p>Age: {selectedStudent.Age}</p>
+                        <p>Fees: {selectedStudent.fee}</p>
+                        <p>Class: {selectedStudent.class}</p>
+                        <p>Age: {selectedStudent.age}</p>
                     </div>
                 )}
 
@@ -77,7 +70,7 @@ const Transaction = () => {
                 <select value={selectedTeacherId} onChange={selectChangeTeacher}>
                     {teachers.map(teacher => (
                         <option key={teacher.id} value={teacher.id}>
-                            {teacher.Name}
+                            {teacher.name}
                         </option>
                     ))}
                 </select>
@@ -86,9 +79,9 @@ const Transaction = () => {
                     <div>
                         <h2>Selected Teacher</h2>
                         <p>ID: {selectedTeacher.id}</p>
-                        <p>Salary: {selectedTeacher.Salary}</p>
-                        <p>Subjects: {selectedTeacher.Subjects}</p>
-                        <p>Age: {selectedTeacher.Age}</p>
+                        <p>Salary: {selectedTeacher.salary}</p>
+                        <p>Subjects: {selectedTeacher.subjects}</p>
+                        <p>Age: {selectedTeacher.age}</p>
                     </div>
                 )}
             </div>
@@ -101,7 +94,7 @@ const Transaction = () => {
     useEffect(() => {
         const getstudentid = async () => {
             setIsLoading(true);
-            axios.put(`http://localhost:3001/students/findstudent/${selectedStudentId}`).then((respose) => {
+            axios.get(`http://localhost:3001/students/findstudent/${selectedStudentId}`).then((respose) => {
                 setselectedStudent(respose.data)
             })
             setIsLoading(false);
@@ -113,7 +106,7 @@ const Transaction = () => {
     useEffect(() => {
         const getteacherid = async () => {
             setIsLoading(true);
-            axios.put(`http://localhost:3001/teachers/findteacher/${selectedTeacherId}`).then((respose) => {
+            axios.get(`http://localhost:3001/teachers/findteacher/${selectedTeacherId}`).then((respose) => {
                 setselectedTeacher(respose.data)
             })
             setIsLoading(false);
@@ -128,26 +121,34 @@ const Transaction = () => {
     }
     return (
         <div>
-            <div className="App">
-                <div className='page-wrapper' style={teacherstyle}>
-                    <div className="container">
-                        <header>Transactions</header>
-                        <div className="form first">
-                            <div className="details personal">
-                                <span className="title">Personal Details</span>
+            <div className="page-wrapper">
+                <div className="dashboard-content-wrapper" >
+                    <div className="dashboard-content-wrap">
+                        <div className="page-title">
+                            <h2 className="page-heading">Transaction</h2>
+                        </div>
+                        <div class="create-onvoice-form-wrapper">
+                            <div className="personal-information-wrapper">
 
-                                <div className="fields">
-                                    <div className="input-field">
-                                        <form>
-                                            <label>Enter the Type</label>
-                                            <select value={tracstype} onChange={handleChange}>
-                                                <option value='student'>Students</option>
-                                                <option value='teacher'>Teacher</option>
-                                            </select>
-                                        </form>
-                                        {content}
+                                <div className="personal-information-form-wrapper">
+
+                                    <div className="fields">
+                                        <div className="input-field">
+                                            <form>
+                                                <span className="single-wrapper-common-tittle">Enter The Details</span>
+                                                <div >
+                                                    <label className="personal-information-single-tittle">Type</label>
+                                                    <select value={tracstype} onChange={handleChange}>
+                                                        <option value='student'>Students</option>
+                                                        <option value='teacher'>Teacher</option>
+                                                    </select>
+                                                </div>
+                                            </form>
+                                            {content}
+                                        </div>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>

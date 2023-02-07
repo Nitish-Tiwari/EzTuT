@@ -9,7 +9,7 @@ function DonutChar() {
         const fetechdata = async () => {
             const { data } = await axios.get("http://localhost:3001/students/eachclass")
             setchartdata({
-                labels: data.map((item) => item.Class),
+                labels: data.map((item) => item.class),
                 datasets: [
                     {
                         data: data.map((item) => item.num_students),

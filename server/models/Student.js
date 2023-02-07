@@ -1,26 +1,34 @@
 module.exports = (sequelize, DataTypes) => {
     const Students = sequelize.define("Students", {
-        Name: {
+        name: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        Age: {
+        age: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        Gender: {
+        gender: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        Class: {
+        class: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        Address: {
+        batchname: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        phonenumber: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        address: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        Fee: {
+        fee: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },

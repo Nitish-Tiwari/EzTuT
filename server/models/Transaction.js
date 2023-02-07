@@ -16,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
+        TypeOfAmount: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        }
     });
     return Transaction
 }

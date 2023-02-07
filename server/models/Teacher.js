@@ -1,22 +1,26 @@
 module.exports = (sequelize, DataTypes) => {
     const Teachers = sequelize.define("Teachers", {
-        Name: {
+        name: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        Age: {
+        age: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        Gender: {
+        phonenumber: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+        gender: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        Subjects: {
+        subjects: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        Salary: {
+        salary: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },

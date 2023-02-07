@@ -31,10 +31,24 @@ router.post("/", async (req, res) => {
         res.json(err);
     }
 })
-router.put('/findteacher/:id', async (req, res) => {
+router.get('/findteacher/:id', async (req, res) => {
     const id = req.params.id;
     const findteacher = await Teachers.findOne({ where: { id: id } })
     res.json(findteacher)
+})
+
+router.delete('/findteacher/:id', async (req, res) => {
+    Teachers.destroy({
+        where: {
+            id: req.params.id,
+        },
+    })
+        .then(() => {
+            res.sendStatus(204);
+        })
+        .catch((error) => {
+            res.status(400).send({ error: error.message });
+        });
 })
 
 router.get('/teachercount', async (req, res) => {
@@ -46,7 +60,7 @@ router.get("/totalsalary", async (req, res) => {
     res.json(totalsalary)
 })
 router.get("/monthsalary", async (req, res) => {
-    const monthsalary = await sequelize.query("SELECT MONTHNAME(createdAt) as Month_Wise,count(monthname(createdAt)) Sales_count,Sum(Salary) Sales_Value from eztutdb.teachers group by MONTHNAME(createdAt)",
+    const monthsalary = await sequelize.query("SELECT MONTHNAME(createdAt) as Month_Wise,count(monthname(createdAt)) Sales_count,Sum(salary) Sales_Value from eztutdb.teachers group by MONTHNAME(createdAt)",
         { type: Sequelize.QueryTypes.SELECT })
     res.json(monthsalary)
 })

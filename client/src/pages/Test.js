@@ -4,7 +4,7 @@ import { Col, Row } from 'antd';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
-const CreateStudent = () => {
+const Test = () => {
     const initialValues = {
         name: "",
         age: "",
@@ -17,10 +17,8 @@ const CreateStudent = () => {
 
     };
     const onSubmit = (data) => {
-
         axios.post("http://localhost:3001/students", data).then((respose) => {
             console.log("data")
-            console.log(data)
         })
     };
 
@@ -48,7 +46,7 @@ const CreateStudent = () => {
                                     <h3>Personal Detail</h3>
                                 </div>
                                 <Row gutter={12} className="section_detail">
-                                    <Col span={12} lg={12} md={12} sm={12} xs={24} flex="350px" className="section_info">
+                                    <Col span={12} lg={12} md={12} sm={12} xs={24} flex="auto" className="section_info">
                                         <div className="info_title">
                                             <h4>Full Name</h4>
                                         </div>
@@ -58,7 +56,7 @@ const CreateStudent = () => {
                                                 placeholder="Nitish" />
                                         </div>
                                     </Col>
-                                    <Col span={6} lg={12} md={12} sm={12} xs={24} flex="350px" className="section_info">
+                                    <Col span={6} lg={12} md={12} sm={12} xs={24} flex="auto" className="section_info">
                                         <div className="info_title">
                                             <h4>Age</h4>
                                         </div>
@@ -161,4 +159,68 @@ const CreateStudent = () => {
         </div>
     )
 }
-export default CreateStudent;
+export default Test;
+
+// export default Test
+// import React, { useState } from 'react';
+
+// const Test = () => {
+//     const [exam, setExam] = useState({
+//         className: '',
+//         students: []
+//     });
+
+//     const handleClassNameChange = event => {
+//         setExam({ ...exam, className: event.target.value });
+//     };
+
+//     const handleStudentNameChange = (event, index) => {
+//         const newStudents = [...exam.students];
+//         newStudents[index] = { ...newStudents[index], name: event.target.value };
+//         setExam({ ...exam, students: newStudents });
+//     };
+
+//     const handleStudentMarksChange = (event, index) => {
+//         const newStudents = [...exam.students];
+//         newStudents[index] = { ...newStudents[index], marks: event.target.value };
+//         setExam({ ...exam, students: newStudents });
+//     };
+
+//     const handleAddStudent = () => {
+//         setExam({ ...exam, students: [...exam.students, { name: '', marks: '' }] });
+//     };
+
+//     return (
+//         <div className="page-wrapper">
+//             <div className="dashboard-content-wrapper">
+//                 <div className="dashboard-content-wrap">
+//                     <div>
+//                         <h2>Create Exam</h2>
+//                         <div>
+//                             <label>
+//                                 Class Name:
+//                                 <input type="text" value={exam.className} onChange={handleClassNameChange} />
+//                             </label>
+//                         </div>
+//                         <br />
+//                         {exam.students.map((student, index) => (
+//                             <div key={index}>
+//                                 <label>
+//                                     Student {index + 1} Name:
+//                                     <input type="text" value={student.name} onChange={event => handleStudentNameChange(event, index)} />
+//                                 </label>
+//                                 <label>
+//                                     Student {index + 1} Marks:
+//                                     <input type="text" value={student.marks} onChange={event => handleStudentMarksChange(event, index)} />
+//                                 </label>
+//                             </div>
+//                         ))}
+//                         <br />
+//                         <button onClick={handleAddStudent}>Add Student</button>
+//                     </div>
+//                 </div>
+//             </div>
+//         </div>
+//     );
+// };
+

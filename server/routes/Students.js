@@ -25,10 +25,23 @@ router.post("/", async (req, res) => {
     await Students.create(post);
     res.json(post);
 })
-router.put('/findstudent/:id', async (req, res) => {
+router.get('/findstudent/:id', async (req, res) => {
     const id = req.params.id;
     const findstudent = await Students.findOne({ where: { id: id } })
     res.json(findstudent)
+})
+router.delete('/findstudent/:id', async (req, res) => {
+    Students.destroy({
+        where: {
+            id: req.params.id,
+        },
+    })
+        .then(() => {
+            res.sendStatus(204);
+        })
+        .catch((error) => {
+            res.status(400).send({ error: error.message });
+        });
 })
 
 router.get('/studentcount', async (req, res) => {
@@ -40,14 +53,14 @@ router.get("/totalfee", async (req, res) => {
     res.json(totalfee)
 })
 router.get("/monthfee", async (req, res) => {
-    const monthfee = await sequelize.query("SELECT MONTHNAME(createdAt) as Month_Wise,count(monthname(createdAt)) Sales_count,Sum(Fee) Sales_Value from students group by MONTHNAME(createdAt)",
+    const monthfee = await sequelize.query("SELECT MONTHNAME(createdAt) as Month_Wise,count(monthname(createdAt)) Sales_count,Sum(fee) Sales_Value from students group by MONTHNAME(createdAt)",
         { type: Sequelize.QueryTypes.SELECT })
     res.json(monthfee)
 })
 router.get("/eachclass", async (req, res) => {
     const eachclass = await Students.findAll({
-        attributes: ['Class', [Sequelize.fn('COUNT', '*'), 'num_students']],
-        group: ['Class']
+        attributes: ['class', [Sequelize.fn('COUNT', '*'), 'num_students']],
+        group: ['class']
     })
     res.json(eachclass)
 })
