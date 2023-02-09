@@ -213,7 +213,12 @@ const Home = () => {
                                             className='w-25 form-control'
                                             value={search}
                                             onChange={(e) => setSearch(e.target.value)}
-                                            style={{ borderRadius: "10px" }}
+                                            style={{
+                                                borderRadius: "5px",
+
+                                                borderStyle: "solid",
+                                                padding: "5px"
+                                            }}
 
                                         />
                                     }

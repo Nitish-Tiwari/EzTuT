@@ -4,7 +4,7 @@ const layout = {
     labelCol: { span: 8 },
     wrapperCol: { span: 16 },
 };
-const EditModelStudent = ({ open, onCreate, onCancel, form }) => {
+const EditModelTeacher = ({ open, onCreate, onCancel, form }) => {
 
 
     const handleOk = () => {
@@ -21,7 +21,7 @@ const EditModelStudent = ({ open, onCreate, onCancel, form }) => {
     return (
         <Modal
             open={open}
-            title="Edit Student"
+            title="Edit Teacher"
             okText="Save"
             cancelText="Cancel"
             onCancel={onCancel}
@@ -40,7 +40,7 @@ const EditModelStudent = ({ open, onCreate, onCancel, form }) => {
                 <Form.Item
                     name="gender"
                     label="Gender"
-                    rules={[{ required: true, message: 'Please Select a option' }]}
+                    rules={[{ required: true, message: 'Please Select a Gender!' }]}
                 >
                     <Select >
                         <Select.Option value="male">Male</Select.Option>
@@ -48,10 +48,10 @@ const EditModelStudent = ({ open, onCreate, onCancel, form }) => {
                     </Select>
                 </Form.Item>
                 <Form.Item
-                    name="class"
-                    label="Class"
+                    name="subjects"
+                    label="Subjects"
 
-                    rules={[{ required: true, message: 'Please input the class!' }]}
+                    rules={[{ required: true, message: 'Please input the Subject!' }]}
                 >
                     <Input />
                 </Form.Item>
@@ -64,26 +64,10 @@ const EditModelStudent = ({ open, onCreate, onCancel, form }) => {
                     <Input />
                 </Form.Item>
                 <Form.Item
-                    name="batchname"
-                    label="Batch Name"
+                    name="salary"
+                    label="Salary"
 
-                    rules={[{ required: true, message: 'Please input a Batch Name!' }]}
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item
-                    name="address"
-                    label="Address"
-
-                    rules={[{ required: true, message: 'Please type a Address!' }]}
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item
-                    name="fee"
-                    label="Fee"
-
-                    rules={[{ required: true, message: 'Please enter a Fee!' }]}
+                    rules={[{ required: true, message: 'Please enter a Salary!' }]}
                 >
                     <Input />
                 </Form.Item>
@@ -92,4 +76,4 @@ const EditModelStudent = ({ open, onCreate, onCancel, form }) => {
     );
 };
 
-export default EditModelStudent;
+export default EditModelTeacher;

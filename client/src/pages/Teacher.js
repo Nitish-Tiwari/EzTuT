@@ -8,8 +8,9 @@ import { Row, Col } from 'antd';
 import "../css/createstudent.css"
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
-import { Button } from "antd"
-import { CloseOutlined } from '@ant-design/icons';
+import { Button, Form as Formantd } from "antd"
+import { CloseOutlined, EditOutlined } from '@ant-design/icons';
+import EditModelTeacher from './EditModelTeacher.js';
 const Teacher = () => {
     let location = useNavigate();
     const initialValues = {
@@ -20,7 +21,9 @@ const Teacher = () => {
         subjects: "",
         salary: "",
     };
+    const [form] = Formantd.useForm()
     const [loading, setLoading] = useState(false);
+    const [visible, setVisible] = useState(false);
     const validationSchema = Yup.object().shape({
         name: Yup.string().required("Please Enter a Name"),
         age: Yup.number().required("Please Enter a Age"),
@@ -29,6 +32,8 @@ const Teacher = () => {
         subjects: Yup.string().required("Please Select Subjects"),
         salary: Yup.number().required("Please Enter the Salary"),
     });
+    const [selectedTeacher, setSelectedTeacher] = useState('')
+    const [selectedTeacherId, setSelectedTeacherId] = useState('')
     const onSubmit = (data) => {
         setLoading(true)
         console.log(data)
@@ -44,6 +49,7 @@ const Teacher = () => {
     const [listofTeachers, setListofTeachers] = useState([]);
     const [search, setSearch] = useState("");
     const [filteredTeachers, setFilteredTeachers] = useState([]);
+
 
     const getTeachers = async () => {
         setLoading(true)
@@ -85,12 +91,49 @@ const Teacher = () => {
             selector: (row) => moment(row.createdAt).format('DD/MM/YYYY'),
         }, {
             name: "Action",
-            cell: row => <Button type='danger' onClick={() => handleDelete(row.id)}><CloseOutlined /></Button>,
+            cell: row =>
+                <div>
+                    <Button style={{ backgroundColor: "red", color: "white" }} onClick={() => handleDelete(row.id)}><CloseOutlined /></Button>
+                    <Button type='primary' onClick={() => showModal(row)}><EditOutlined /></Button>
+                </div>,
             ignoreRowClick: true,
             allowOverflow: true,
             button: true,
         }
     ];
+    const showModal = (value) => {
+        setVisible(true)
+        setSelectedTeacherId(value.id)
+        form.setFieldsValue({
+            name: value.name,
+            gender: value.gender,
+            subjects: value.subjects,
+            phonenumber: value.phonenumber,
+            salary: value.salary
+        })
+
+
+    };
+    const handleCreate = values => {
+
+        form.resetFields();
+        setLoading(true)
+        editTeacher(values)
+
+
+        setVisible(false);
+
+
+    };
+    const handleCancel = () => {
+
+
+        form.resetFields();
+        setVisible(false);
+
+
+    };
+
     const handleDelete = async (id) => {
         setLoading(true);
 
@@ -103,9 +146,16 @@ const Teacher = () => {
             console.log(error.message);
         }
     };
+    const editTeacher = async (vales) => {
+        console.log(loading, "loading value 1")
+        axios.put(`http://localhost:3001/teachers/findteacher/${selectedTeacherId}`, vales).then(
+            console.log("Teacher Successfully Updated", selectedTeacherId,), setLoading(false), console.log(loading, "loading 2")).catch((err) => {
+                console.log(err)
+            })
+    }
     useEffect(() => {
         getTeachers();
-    }, [loading]);
+    }, [loading, visible]);
     useEffect(() => {
         const result = listofTeachers.filter((teacher) => {
             return teacher.name.toLowerCase().match(search.toLocaleLowerCase());
@@ -243,6 +293,13 @@ const Teacher = () => {
                             </Formik>
                         </div>
                         <div style={{ marginTop: "40px" }}>
+                            <EditModelTeacher
+                                open={visible}
+                                onCreate={handleCreate}
+                                onCancel={handleCancel}
+                                // initialValues={{ selectedStudent }}
+                                form={form}
+                            />
                             <DataTable
                                 title="Teachers List"
                                 columns={columns}
@@ -263,6 +320,12 @@ const Teacher = () => {
                                         type="text"
                                         placeholder='Search here'
                                         className='w-25 form-control'
+                                        style={{
+                                            borderRadius: "5px",
+
+                                            borderStyle: "solid",
+                                            padding: "5px"
+                                        }}
                                         value={search}
                                         onChange={(e) => setSearch(e.target.value)}
                                     />

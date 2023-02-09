@@ -50,7 +50,24 @@ router.delete('/findteacher/:id', async (req, res) => {
             res.status(400).send({ error: error.message });
         });
 })
-
+router.put('/findteacher/:id', (req, res) => {
+    const id = req.params.id;
+    const { ...data } = req.body;
+    Teachers.update(
+        { ...data },
+        {
+            where: {
+                id
+            },
+        }
+    )
+        .then((updatedUser) => {
+            res.status(200).send({ data: updatedUser });
+        })
+        .catch((error) => {
+            res.status(400).send({ error: error.message, data: { ...req.body } });
+        });
+});
 router.get('/teachercount', async (req, res) => {
     const count = await Teachers.count();
     res.json(count)
