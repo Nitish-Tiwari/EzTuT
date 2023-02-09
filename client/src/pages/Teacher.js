@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios';
 import { useEffect, useState } from "react"
-import DataTable from "react-data-table-component";
+import DataTable, { createTheme } from "react-data-table-component";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { Row, Col } from 'antd';
@@ -112,6 +112,30 @@ const Teacher = () => {
         });
         setFilteredTeachers(result);
     }, [search]);
+    createTheme('solarized', {
+        text: {
+            primary: 'black',
+            secondary: 'black',
+        },
+        background: {
+            default: '#ffffff',
+            borderRadius: "10px"
+        },
+        context: {
+            background: '#cb4b16',
+            text: '#FFFFFF',
+        },
+        divider: {
+            default: '#073642',
+        },
+
+        action: {
+            button: 'rgba(0,0,0,.54)',
+            hover: 'rgba(0,0,0,.08)',
+            disabled: 'rgba(0,0,0,.12)',
+        },
+
+    }, 'dark');
     return (
 
         <div className="App">
@@ -228,6 +252,7 @@ const Teacher = () => {
                                 }}
                                 pagination
                                 fixedHeader
+                                theme="solarized"
                                 fixedHeaderScrollHeight='450px'
                                 selectableRows
                                 selectableRowsHighlight

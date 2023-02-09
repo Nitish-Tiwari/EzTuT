@@ -43,7 +43,24 @@ router.delete('/findstudent/:id', async (req, res) => {
             res.status(400).send({ error: error.message });
         });
 })
-
+router.put('/findstudent/:id', (req, res) => {
+    const id = req.params.id;
+    const { ...data } = req.body;
+    Students.update(
+        { ...data },
+        {
+            where: {
+                id
+            },
+        }
+    )
+        .then((updatedUser) => {
+            res.status(200).send({ data: updatedUser });
+        })
+        .catch((error) => {
+            res.status(400).send({ error: error.message, data: { ...req.body } });
+        });
+});
 router.get('/studentcount', async (req, res) => {
     const count = await Students.count();
     res.json(count)
@@ -63,5 +80,31 @@ router.get("/eachclass", async (req, res) => {
         group: ['class']
     })
     res.json(eachclass)
+})
+router.get("/getbatchname", async (req, res) => {
+    const arrbatch = await sequelize.query(
+        'SELECT DISTINCT batchname FROM students',
+        { type: sequelize.QueryTypes.SELECT }
+    )
+    let finalResult = []
+    let studentResult = []
+    await Promise.all(arrbatch.map(async (obj) => {
+        studentResult = await Students.findAll({
+            where: {
+                batchname: obj['batchname']
+            }
+        })
+        finalResult.push({
+            batchname: obj['batchname'],
+            students: studentResult
+        })
+    }))
+    console.log(finalResult)
+    res.json(finalResult)
+})
+router.get("/getbybatchname/:batchname", async (req, res) => {
+    const batchname = req.params.batchname
+
+    res.json(batchname)
 })
 module.exports = router;

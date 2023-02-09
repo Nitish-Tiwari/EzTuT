@@ -5,13 +5,17 @@ import DataTable, { createTheme } from "react-data-table-component"
 import "../css/createstudent.css"
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
-import { Button } from "antd"
-import { CloseOutlined } from '@ant-design/icons';
+import { Button, Form } from "antd"
+import { CloseOutlined, EditOutlined } from '@ant-design/icons';
+import EditModelStudent from './EditModelStudent.js';
 const Home = () => {
     const [listofStudents, setListofStudents] = useState([]);
     const [search, setSearch] = useState("");
     const [filteredStudents, setFilteredStudents] = useState([]);
+    const [selectedStudent, setSelectedStudent] = useState('')
+    const [selectedStudentId, setSelectedStudentId] = useState('')
     const [loading, setLoading] = useState(false);
+    const [visible, setVisible] = useState(false);
     const getStudents = async () => {
         axios.get("http://localhost:3001/students").then((respose) => {
             setListofStudents(respose.data);
@@ -19,7 +23,15 @@ const Home = () => {
             console.log("data fetched")
         })
     }
+    const editStudent = async (vales) => {
+        console.log(loading, "loading value 1")
+        axios.put(`http://localhost:3001/students/findstudent/${selectedStudentId}`, vales).then(
+            console.log("Student Successfully Updated", selectedStudentId,), setLoading(false), console.log(loading, "loading 2")).catch((err) => {
+                console.log(err)
+            })
+    }
     let location = useNavigate();
+    const [form] = Form.useForm()
     const columns = [
         {
             name: "Name",
@@ -64,15 +76,54 @@ const Home = () => {
         },
         {
             name: "Action",
-            cell: row => <Button type='danger' onClick={() => handleDelete(row.id)}><CloseOutlined /></Button>,
+            cell: row => <div>
+                <Button style={{ backgroundColor: "red", color: "white" }} onClick={() => handleDelete(row.id)}><CloseOutlined /></Button>
+                <Button type='primary' onClick={() => showModal(row)}><EditOutlined /></Button>
+            </div>,
             ignoreRowClick: true,
             allowOverflow: true,
             button: true,
         }
     ];
+    const showModal = (value) => {
+        setVisible(true)
+        setSelectedStudentId(value.id)
+        form.setFieldsValue({
+            name: value.name,
+            gender: value.gender,
+            class: value.class,
+            phonenumber: value.phonenumber,
+            batchname: value.batchname,
+            address: value.address,
+            fee: value.fee
+        })
+
+
+
+    };
+
+    const handleCancel = () => {
+
+
+        form.resetFields();
+        setVisible(false);
+
+
+    };
+    const handleCreate = values => {
+
+        form.resetFields();
+        setLoading(true)
+        editStudent(values)
+
+
+        setVisible(false);
+
+
+    };
     const handleDelete = async (id) => {
         setLoading(true);
-
+        console.log(loading, "delete loading")
         try {
             await axios.delete(`http://localhost:3001/students/findstudent/${id}`);
             setLoading(false);
@@ -84,8 +135,8 @@ const Home = () => {
     };
     createTheme('solarized', {
         text: {
-            primary: '#268bd2',
-            secondary: '#2aa198',
+            primary: 'black',
+            secondary: 'black',
         },
         background: {
             default: '#ffffff',
@@ -109,7 +160,7 @@ const Home = () => {
 
     useEffect(() => {
         getStudents();
-    }, [loading]);
+    }, [loading, visible]);
     useEffect(() => {
         const result = listofStudents.filter((student) => {
             return student.name.toLowerCase().match(search.toLocaleLowerCase());
@@ -118,7 +169,15 @@ const Home = () => {
     }, [search]);
 
     return (
+
         <div className="page-wrapper">
+            <EditModelStudent
+                open={visible}
+                onCreate={handleCreate}
+                onCancel={handleCancel}
+                // initialValues={{ selectedStudent }}
+                form={form}
+            />
             <div className="dashboard-content-wrapper" >
                 <div className="dashboard-content-wrap">
                     <div className="page-title">
@@ -160,6 +219,7 @@ const Home = () => {
                                     }
 
                                 />
+
                             </div>
                         </div>
                     </div>

@@ -1,5 +1,5 @@
 import React from 'react'
-import "../css/test.css"
+import "../css/createstudent.css"
 import { Col, Row } from 'antd';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';

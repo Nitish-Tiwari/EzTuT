@@ -39,6 +39,7 @@
     font-weight: 500;
 }
 
+
 .info_title {
     margin-bottom: 10px;
     color: #00162f;
@@ -86,6 +87,7 @@
     text-decoration: none;
 } */
 .submit {
+    margin-left: 10px;
     display: inline-block;
     vertical-align: middle;
     background-color: transparent;
@@ -150,4 +152,22 @@
     margin-right: 5px;
     width: 20px;
     height: 20px;
+}
+
+.batchsection {
+    display: flex;
+    justify-content: space-between;
+}
+
+.transaction_flex {
+    display: flex;
+}
+
+.blockmargin {
+    margin-right: 15%;
+    margin-left: 1%;
+}
+
+.blockmargininput {
+    margin-left: 1%;
 }
