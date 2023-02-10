@@ -14,6 +14,7 @@ import Transaction from './pages/Transaction.js'
 import Test from './pages/Test.js';
 import StudentDetail from './pages/StudentDetail.js';
 import TeacherDetail from './pages/TeacherDetail.js';
+import ReminderPage from './pages/ReminderPage.js';
 
 function App() {
   return <div className='App'>
@@ -29,6 +30,7 @@ function App() {
         <Route exact path='/profile' element={<Profile />}></Route>
         <Route exact path='/tranactions' element={<Transaction />}></Route>
         <Route exact path='/test' element={<Test />}></Route>
+        <Route exact path='/reminder' element={<ReminderPage />}></Route>
         <Route exact path='/' element={<Dashboard />}></Route>
       </Routes>
     </Router>

@@ -1,10 +1,13 @@
 const express = require("express")
+const fast2sms = require('fast-two-sms')
 const router = express.Router()
 const { Students } = require('../models');
 const Student = require("../models/Student.js");
 const Sequelize = require('sequelize');
 const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../config/config.json')[env];
+const nodemailer = require('nodemailer')
+
 const db = {};
 
 let sequelize;
@@ -22,13 +25,51 @@ router.get('/', async (req, res) => {
 
 router.post("/", async (req, res) => {
     const post = req.body
-    await Students.create(post);
-    res.json(post);
+    try {
+        await Students.create(post);
+        res.json(post);
+    }
+    catch (err) {
+        res.json(err)
+    }
+
+
 })
 router.get('/findstudent/:id', async (req, res) => {
     const id = req.params.id;
     const findstudent = await Students.findOne({ where: { id: id } })
     res.json(findstudent)
+})
+router.post('/reminder', async (req, res) => {
+    const body = req.body
+    let mailTransporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user: "kakarotgoku1529@gmail.com",
+            pass: "furtoimuiyfdjimn"
+        }
+    })
+    let details = {
+        from: "kakarotgoku1529",
+        to: body.to,
+        subject: "Please Clear the Remaining Due Fee",
+        text: `${body.message} 
+        Total Fee: ${body.totalfee}
+        Total Paid Fee: ${body.totalpaidfee}`
+
+    }
+    mailTransporter.sendMail(details, (err) => {
+        if (err) {
+            res.send(err)
+        }
+        else {
+            res.send("successfull")
+        }
+    })
+
+
+
+
 })
 router.delete('/findstudent/:id', async (req, res) => {
     Students.destroy({

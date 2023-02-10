@@ -9,15 +9,23 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
         },
         phonenumber: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allowNull: false,
         },
         gender: {
             type: DataTypes.STRING,
             allowNull: false,
         },
+        email: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         subjects: {
             type: DataTypes.STRING,
+            allowNull: false,
+        },
+        paidsalary: {
+            type: DataTypes.INTEGER,
             allowNull: false,
         },
         salary: {

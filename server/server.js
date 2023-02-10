@@ -11,7 +11,7 @@ const teacherRouter = require("./routes/Teachers.js")
 const transactionRouter = require("./routes/Transactions.js")
 app.use("/students", studentRouter);
 app.use("/teachers", teacherRouter);
-app.use("/transaction", transactionRouter);
+app.use("/transactions", transactionRouter);
 
 
 db.sequelize.sync().then(() => {

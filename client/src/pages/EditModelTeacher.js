@@ -64,6 +64,14 @@ const EditModelTeacher = ({ open, onCreate, onCancel, form }) => {
                     <Input />
                 </Form.Item>
                 <Form.Item
+                    name="email"
+                    label="Email"
+
+                    rules={[{ required: true, message: 'Please enter a email' }]}
+                >
+                    <Input />
+                </Form.Item>
+                <Form.Item
                     name="salary"
                     label="Salary"
 

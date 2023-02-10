@@ -12,9 +12,14 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.1",
+    "fast-two-sms": "^3.0.0",
+    "messagebird": "^4.0.1",
     "mysql2": "^2.3.3",
+    "nodemailer": "^6.9.1",
     "nodemon": "^2.0.20",
+    "request": "^2.88.2",
     "sequelize": "^6.23.1",
-    "sequelize-cli": "^6.4.1"
+    "sequelize-cli": "^6.4.1",
+    "twilio": "^4.7.2"
   }
 }

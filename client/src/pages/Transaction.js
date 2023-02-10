@@ -6,6 +6,7 @@ import TransactionTable from './TransactionTable.js';
 
 const Transaction = () => {
     const [selectedOption, setSelectedOption] = useState('student');
+    const [loading, setLoading] = useState(false);
     //Student
     const [studentData, setStudentData] = useState([])
     const [selectedBatchname, setSelectedBatchname] = useState(null);
@@ -15,30 +16,58 @@ const Transaction = () => {
     //Teacher
     const [teacherData, setTeacherData] = useState([])
     const [selectedTeacher, setSelectedTeacher] = useState(null);
-    const getMainData = () => {
+    const getStudentData = () => {
         axios.get("http://localhost:3001/students/getbatchname").then((data) => {
             setStudentData(data.data)
         })
+
+    }
+    const getTeacherData = () => {
+
         axios.get("http://localhost:3001/teachers").then((data) => {
+            console.log("TeacherData")
             setTeacherData(data.data)
         })
     }
 
-    console.log(teacherData)
+
     const createPostBodyStudent = () => {
-        console.log({ "Name": selectedStudent, "Type": selectedOption, "MobileNumber": getSelectedStudentData().phonenumber, "paymentAmount": paymentAmount, "paymentMethod": paymentMethod, "Income/Expense": "income" })
+        setLoading(true);
+        axios.post("http://localhost:3001/transactions", ({ "name": selectedStudent, "typeofperson": selectedOption, "personid": getSelectedStudentData().id, "batchname": selectedBatchname, "phonenumber": getSelectedStudentData().phonenumber, "amount": paymentAmount, "amounttype": paymentMethod, "typeofamount": "income" })).then(
+            console.log("Transaction Successfull"),
+            setLoading(false)
+        )
+        console.log({ "name": selectedStudent, "typeofperson": selectedOption, "personid": getSelectedStudentData().id, "batchname": selectedBatchname, "phonenumber": getSelectedStudentData().phonenumber, "amount": paymentAmount, "amounttype": paymentMethod, "typeofamount": "income" })
         setPaymentAmount("")
+        setLoading(true);
+        axios.put(`http://localhost:3001/students/findstudent/${getSelectedStudentData().id}`, { "paidfee": (parseInt(paymentAmount) + parseInt(getSelectedStudentData().paidfee)) }).then(
+            console.log("Student Paid Fee Successfully Updated", getSelectedStudentData().id), setLoading(false), console.log(loading, "loading 2")).catch((err) => {
+                console.log(err)
+                setLoading(false)
+            })
 
     }
     const createPostBodyTeacher = () => {
-        console.log({ "Name": selectedTeacher, "Type": selectedOption, "MobileNumber": getSelectedTeacherData().phonenumber, "paymentAmount": paymentAmount, "paymentMethod": paymentMethod, "Income/Expense": "expense" })
+        setLoading(true);
+        axios.post("http://localhost:3001/transactions", ({ "name": selectedTeacher, "typeofperson": selectedOption, "personid": getSelectedTeacherData().id, "phonenumber": getSelectedTeacherData().phonenumber, "amount": paymentAmount, "amounttype": paymentMethod, "typeofamount": "expense" })).then(
+            console.log("Transaction Successfull"),
+            setLoading(false)
+        )
+        console.log({ "name": selectedTeacher, "typeofperson": selectedOption, "personid": getSelectedTeacherData().id, "phonenumber": getSelectedTeacherData().phonenumber, "amount": paymentAmount, "amounttype": paymentMethod, "typeofamount": "expense" })
         setPaymentAmount("")
+        setLoading(true);
+        axios.put(`http://localhost:3001/teachers/findteacher/${getSelectedTeacherData().id}`, { "paidsalary": (parseInt(paymentAmount) + parseInt(getSelectedTeacherData().paidsalary)) }).then(
+            console.log("Teacher Paid Salary Successfully Updated", getSelectedTeacherData().id), setLoading(false), console.log(loading, "loading 2")).catch((err) => {
+                console.log(err)
+                setLoading(false)
+            })
     }
 
     useEffect(() => {
-        getMainData();
+        getStudentData();
+        getTeacherData()
 
-    }, [selectedOption])
+    }, [paymentAmount])
     //Student section
     const handleOptionChange = (event) => {
         setSelectedOption(event.target.value);
@@ -211,6 +240,19 @@ const Transaction = () => {
                                             </div>
                                         </div>
                                     </div>
+                                    <div className="section_info transaction_flex">
+                                        <div className='blockmargin' >
+                                            <div className="info_title">
+                                                <h4>Total Paid Fee</h4>
+                                            </div>
+                                            <div className="info_input blockmargininput">
+                                                <input value={getSelectedStudentData().paidfee} disabled className="personal-information-single-field w-input w-custom" style={{
+                                                    padding: "0 11px", width: "200px",
+                                                    height: "32px"
+                                                }} />
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className="admission_detail_section " style={{ marginTop: "30px" }}>
                                     <div className="section_title" >
@@ -298,6 +340,19 @@ const Transaction = () => {
                                             </div>
                                         </div>
                                     </div>
+                                    <div className="section_info transaction_flex">
+                                        <div className='blockmargin' >
+                                            <div className="info_title">
+                                                <h4>Total Paid Salary</h4>
+                                            </div>
+                                            <div className="info_input blockmargininput">
+                                                <input value={getSelectedTeacherData().paidsalary} disabled className="personal-information-single-field w-input w-custom" style={{
+                                                    padding: "0 11px", width: "200px",
+                                                    height: "32px"
+                                                }} />
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className="admission_detail_section " style={{ marginTop: "30px" }}>
                                     <div className="section_title" >
@@ -352,7 +407,7 @@ const Transaction = () => {
 
                 </div>
                 <div style={{ marginTop: "40px" }}>
-                    <TransactionTable />
+                    <TransactionTable loading={paymentAmount} />
                 </div>
             </div>
         </div >

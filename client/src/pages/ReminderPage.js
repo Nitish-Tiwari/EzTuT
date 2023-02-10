@@ -6,8 +6,8 @@ import "../css/createstudent.css"
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form } from "antd"
-import { CloseOutlined, EditOutlined } from '@ant-design/icons';
-import EditModelStudent from './EditModelStudent.js';
+import { SendOutlined } from '@ant-design/icons';
+import ReminderModel from './ReminderModel.js';
 const Home = () => {
     const [listofStudents, setListofStudents] = useState([]);
     const [search, setSearch] = useState("");
@@ -23,10 +23,10 @@ const Home = () => {
             console.log("data fetched")
         })
     }
-    const editStudent = async (vales) => {
+    const reminderStudent = async (vales) => {
         console.log(loading, "loading value 1")
-        axios.put(`http://localhost:3001/students/findstudent/${selectedStudentId}`, vales).then(
-            console.log("Student Successfully Updated", selectedStudentId,), setLoading(false), console.log(loading, "loading 2")).catch((err) => {
+        axios.post(`http://localhost:3001/students/reminder`, vales).then(
+            console.log("Student Reminder Successfully Send", vales.message,), setLoading(false), console.log(loading, "loading 2")).catch((err) => {
                 console.log(err)
             })
     }
@@ -57,26 +57,29 @@ const Home = () => {
             sortable: true,
         },
         {
+            name: "Email",
+            selector: (row) => row.email,
+            sortable: true,
+        },
+        {
             name: "Batch Name",
             selector: (row) => row.batchname,
             sortable: true,
         },
 
         {
-            name: "Address",
-            selector: (row) => row.address,
+            name: "Remaining Month",
+            selector: (row) => (10 - (parseInt(row.paidfee) / (parseInt(row.fee) / 10))).toFixed(1),
+            sortable: true,
+            allowOverflow: true,
         },
         {
             name: "Fees",
-            selector: (row) => row.fee,
+            selector: (row) => (row.fee).toLocaleString('hi-IN'),
         },
         {
             name: "Paid Fee",
-            selector: (row) => row.paidfee,
-        },
-        {
-            name: "Email Address",
-            selector: (row) => row.email,
+            selector: (row) => (row.paidfee.toLocaleString('hi-IN')),
         },
         {
             name: "Joined on",
@@ -85,26 +88,26 @@ const Home = () => {
         {
             name: "Action",
             cell: row => <div>
-                <Button style={{ backgroundColor: "red", color: "white" }} onClick={() => handleDelete(row.id)}><CloseOutlined /></Button>
-                <Button type='primary' onClick={() => showModal(row)}><EditOutlined /></Button>
+                <Button style={{ backgroundColor: "#031d51b3", color: "white" }} onClick={() => showModal(row)}><SendOutlined /></Button>
             </div>,
             ignoreRowClick: true,
             allowOverflow: true,
             button: true,
         }
     ];
+    const handleReminder = (data) => {
+        console.log(data)
+    }
     const showModal = (value) => {
         setVisible(true)
         setSelectedStudentId(value.id)
         form.setFieldsValue({
-            name: value.name,
-            gender: value.gender,
-            class: value.class,
-            phonenumber: value.phonenumber,
-            batchname: value.batchname,
-            address: value.address,
-            fee: value.fee,
-            email: value.email
+            from: "kakarotgoku1529@gmail.com",
+            to: value.email,
+            totalfee: (value.fee).toLocaleString('hi-IN'),
+            totalpaidfee: (value.paidfee).toLocaleString('hi-IN'),
+            message: "",
+
         })
 
 
@@ -123,24 +126,12 @@ const Home = () => {
 
         form.resetFields();
         setLoading(true)
-        editStudent(values)
-
+        console.log(values)
+        reminderStudent(values)
 
         setVisible(false);
 
 
-    };
-    const handleDelete = async (id) => {
-        setLoading(true);
-        console.log(loading, "delete loading")
-        try {
-            await axios.delete(`http://localhost:3001/students/findstudent/${id}`);
-            setLoading(false);
-            console.log(id)
-        } catch (error) {
-            setLoading(false);
-            console.log(error.message);
-        }
     };
     createTheme('solarized', {
         text: {
@@ -158,7 +149,13 @@ const Home = () => {
         divider: {
             default: '#073642',
         },
+        button: {
+            default: 'black',
+            hover: 'rgba(0,0,0,.08)',
+            focus: 'rgba(255,255,255,.12)',
+            disabled: 'rgba(160, 160, 160, .34)'
 
+        },
         action: {
             button: 'rgba(0,0,0,.54)',
             hover: 'rgba(0,0,0,.08)',
@@ -180,7 +177,7 @@ const Home = () => {
     return (
 
         <div className="page-wrapper">
-            <EditModelStudent
+            <ReminderModel
                 open={visible}
                 onCreate={handleCreate}
                 onCancel={handleCancel}
@@ -188,14 +185,14 @@ const Home = () => {
                 form={form}
             />
             <div className="dashboard-content-wrapper" >
-                <div className="dashboard-content-wrap">
+                <div className="dashboard-content-wrap" >
                     <div className="page-title">
-                        <h2 className="page-heading">Students</h2>
+                        <h2 className="page-heading">Reminder</h2>
                     </div>
-                    <div className="create-onvoice-form-wrapper">
+                    <div className="create-on(voice-form-wrapper">
                         <div className="personal-information-wrapper">
 
-                            <div className="personal-information-form-wrapper datatablestyle">
+                            {filteredStudents && (<div className="personal-information-form-wrapper datatablestyle">
 
                                 <DataTable
 
@@ -233,7 +230,7 @@ const Home = () => {
 
                                 />
 
-                            </div>
+                            </div>)}
                         </div>
                     </div>
                 </div>

@@ -22,12 +22,26 @@ router.get('/', async (req, res) => {
     }
 });
 router.post("/", async (req, res) => {
+    const post = req.body
     try {
-        const post = req.body
+
         await Transactions.create(post);
         res.json(post);
     } catch (err) {
         res.json(err);
     }
+})
+router.delete('/findtransaction/:id', async (req, res) => {
+    Transactions.destroy({
+        where: {
+            id: req.params.id,
+        },
+    })
+        .then(() => {
+            res.sendStatus(204);
+        })
+        .catch((error) => {
+            res.status(400).send({ error: error.message });
+        });
 })
 module.exports = router;

@@ -156,6 +156,15 @@ const Navbar = () => {
                     />
                     <div className="single-nav-link-text">Teachers</div>
                 </NavLink>
+                <NavLink style={navlinkstyle} to="/reminder" className="single-nav-link-wrapper w-inline-block">
+                    <img
+                        src="https://api.iconify.design/mdi/cellphone-message.svg?color=%2385b6ff&width=30&height=30"
+                        loading="lazy"
+                        alt=""
+                        className="single-nav-link-icon"
+                    />
+                    <div className="single-nav-link-text">Reminder</div>
+                </NavLink>
                 <NavLink style={navlinkstyle} to="/profile" className="single-nav-link-wrapper w-inline-block">
                     <img
                         src="https://assets.website-files.com/61f7c38c8268bb1cdf5a1316/61f7cef519a9c045d4db964d_Sidebar-Icon-7.svg"
@@ -165,6 +174,7 @@ const Navbar = () => {
                     />
                     <div className="single-nav-link-text">Profile</div>
                 </NavLink>
+
             </div>
         </>
     )

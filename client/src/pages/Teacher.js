@@ -20,6 +20,8 @@ const Teacher = () => {
         gender: "",
         subjects: "",
         salary: "",
+        paidsalary: 0,
+        email: ""
     };
     const [form] = Formantd.useForm()
     const [loading, setLoading] = useState(false);
@@ -31,6 +33,7 @@ const Teacher = () => {
         gender: Yup.string().required("Please Select Gender"),
         subjects: Yup.string().required("Please Select Subjects"),
         salary: Yup.number().required("Please Enter the Salary"),
+        email: Yup.string().email('Invalid email').required('Please Enter a Email')
     });
     const [selectedTeacher, setSelectedTeacher] = useState('')
     const [selectedTeacherId, setSelectedTeacherId] = useState('')
@@ -79,12 +82,24 @@ const Teacher = () => {
             selector: (row) => row.gender,
         },
         {
+            name: "Mobile Number",
+            selector: (row) => row.phonenumber,
+        },
+        {
+            name: "Email Address",
+            selector: (row) => row.email,
+        },
+        {
             name: "Subjects",
             selector: (row) => row.subjects,
         },
         {
             name: "Salary",
             selector: (row) => row.salary,
+        },
+        {
+            name: "Salray Paid",
+            selector: (row) => row.paidsalary
         },
         {
             name: "Joined on",
@@ -109,6 +124,7 @@ const Teacher = () => {
             gender: value.gender,
             subjects: value.subjects,
             phonenumber: value.phonenumber,
+            email: value.email,
             salary: value.salary
         })
 
@@ -177,6 +193,13 @@ const Teacher = () => {
         },
         divider: {
             default: '#073642',
+        },
+        button: {
+            default: 'black',
+            hover: 'rgba(0,0,0,.08)',
+            focus: 'rgba(255,255,255,.12)',
+            disabled: 'rgba(160, 160, 160, .34)'
+
         },
 
         action: {
@@ -279,7 +302,20 @@ const Teacher = () => {
                                                 <div className="info_input">
                                                     <ErrorMessage name='salary' component="span" />
                                                     <Field autoComplete="off" id="inputCreateTeacher" name="salary" placeholder="(Ex. 100000)..." className="personal-information-single-field w-input" />
+                                                    <Field autoComplete="off" id="inputCreateStudent" name="paidsalary" type="hidden" />
 
+                                                </div>
+                                            </Col>
+                                        </Row>
+                                        <Row gutter={12} className="section_detail">
+                                            <Col span={6} lg={8} md={12} sm={12} xs={24} flex="auto" className="section_info">
+                                                <div className="info_title">
+                                                    <h4>Email Address</h4>
+                                                </div>
+                                                <div className="info_input">
+                                                    <ErrorMessage name='email' component="span" />
+                                                    <Field autoComplete="off" id="inputCreateStudent" name="email" className="personal-information-single-field w-input"
+                                                        placeholder="(Ex. Vastral)..." />
                                                 </div>
                                             </Col>
                                         </Row>
@@ -292,7 +328,7 @@ const Teacher = () => {
                                 </Form>
                             </Formik>
                         </div>
-                        <div style={{ marginTop: "40px" }}>
+                        <div className='datatablestyle' style={{ marginTop: "40px" }}>
                             <EditModelTeacher
                                 open={visible}
                                 onCreate={handleCreate}
@@ -311,7 +347,7 @@ const Teacher = () => {
                                 fixedHeader
                                 theme="solarized"
                                 fixedHeaderScrollHeight='450px'
-                                selectableRows
+
                                 selectableRowsHighlight
                                 highlightOnHover
                                 subHeader

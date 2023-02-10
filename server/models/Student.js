@@ -16,16 +16,24 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
+        email: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         batchname: {
             type: DataTypes.STRING,
             allowNull: false
         },
         phonenumber: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allowNull: false
         },
         address: {
             type: DataTypes.STRING,
+            allowNull: false,
+        },
+        paidfee: {
+            type: DataTypes.INTEGER,
             allowNull: false,
         },
         fee: {

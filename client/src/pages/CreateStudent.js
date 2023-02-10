@@ -13,11 +13,13 @@ const CreateStudent = () => {
         address: "",
         fee: "",
         phonenumber: "",
-        batchname: ""
+        batchname: "",
+        paidfee: 0,
+        email: ""
 
     };
     const onSubmit = (data) => {
-
+        console.log(data)
         axios.post("http://localhost:3001/students", data).then((respose) => {
             console.log("data")
             console.log(data)
@@ -33,6 +35,7 @@ const CreateStudent = () => {
         fee: Yup.number().required("Please Enter the Fee Amount"),
         phonenumber: Yup.number().required("Please Enter the Phone Number"),
         batchname: Yup.string().required("Please Enter a Batch Name"),
+        email: Yup.string().email('Invalid email').required('Please Enter a Email')
     });
     return (
         <div className="page-wrapper">
@@ -108,6 +111,16 @@ const CreateStudent = () => {
                                                 placeholder="(Ex. Vastral)..." />
                                         </div>
                                     </Col>
+                                    <Col span={6} lg={8} md={12} sm={12} xs={24} flex="auto" className="section_info">
+                                        <div className="info_title">
+                                            <h4>Email Address</h4>
+                                        </div>
+                                        <div className="info_input">
+                                            <ErrorMessage name='email' component="span" />
+                                            <Field autoComplete="off" id="inputCreateStudent" name="email" className="personal-information-single-field w-input"
+                                                placeholder="(Ex. Vastral)..." />
+                                        </div>
+                                    </Col>
 
                                 </Row>
                             </div>
@@ -143,6 +156,7 @@ const CreateStudent = () => {
                                         <div className="info_input">
                                             <ErrorMessage name='fee' component="span" />
                                             <Field autoComplete="off" id="inputCreateStudent" name="fee" placeholder="(Ex. 100000)..." className="personal-information-single-field w-input" />
+                                            <Field autoComplete="off" id="inputCreateStudent" name="paidfee" type="hidden" />
 
                                         </div>
                                     </Col>
