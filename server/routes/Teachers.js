@@ -34,7 +34,11 @@ router.post("/", async (req, res) => {
 router.get('/findteacher/:id', async (req, res) => {
     const id = req.params.id;
     const findteacher = await Teachers.findOne({ where: { id: id } })
-    res.json(findteacher)
+    const teacherid = req.params.id
+    const result = await sequelize.query(`SELECT * FROM eztutdb.transactions WHERE personid = '${teacherid}' AND typeofperson = 'teacher'`,
+        { type: sequelize.QueryTypes.SELECT })
+    res.json({ teacher: findteacher, transactions: result })
+
 })
 
 router.delete('/findteacher/:id', async (req, res) => {

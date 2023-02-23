@@ -9,9 +9,11 @@ const db = require('./models')
 const studentRouter = require('./routes/Students.js');
 const teacherRouter = require("./routes/Teachers.js")
 const transactionRouter = require("./routes/Transactions.js")
+const dashboardRouter = require("./routes/Dashboard.js")
 app.use("/students", studentRouter);
 app.use("/teachers", teacherRouter);
 app.use("/transactions", transactionRouter);
+app.use("/dashboard", dashboardRouter);
 
 
 db.sequelize.sync().then(() => {

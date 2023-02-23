@@ -39,7 +39,7 @@
 
 .card-wrapper {
     margin-bottom: 30px;
-    padding: 30px 25px;
+    padding: 30px;
     border-radius: 10px;
     background-color: #fff;
     box-shadow: 1px 1px 4px 0 #e8f0f5;
@@ -172,4 +172,10 @@
 
 .line-chart-wrap {
     margin-top: 32px;
+}
+
+.carrd-image img {
+
+    padding: 10px;
+    border-radius: 10px;
 }

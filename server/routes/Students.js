@@ -38,7 +38,10 @@ router.post("/", async (req, res) => {
 router.get('/findstudent/:id', async (req, res) => {
     const id = req.params.id;
     const findstudent = await Students.findOne({ where: { id: id } })
-    res.json(findstudent)
+    const studentid = req.params.id
+    const result = await sequelize.query(`SELECT * FROM eztutdb.transactions WHERE personid = '${studentid}' AND typeofperson = 'student'`,
+        { type: sequelize.QueryTypes.SELECT })
+    res.json({ student: findstudent, transactions: result })
 })
 router.post('/reminder', async (req, res) => {
     const body = req.body
@@ -143,9 +146,5 @@ router.get("/getbatchname", async (req, res) => {
     console.log(finalResult)
     res.json(finalResult)
 })
-router.get("/getbybatchname/:batchname", async (req, res) => {
-    const batchname = req.params.batchname
 
-    res.json(batchname)
-})
 module.exports = router;

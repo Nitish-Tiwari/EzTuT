@@ -5,7 +5,7 @@ import DataTable, { createTheme } from "react-data-table-component"
 import "../css/createstudent.css"
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
-import { Button, Form } from "antd"
+import { Button, Form, Modal, notification } from "antd"
 import { CloseOutlined, EditOutlined } from '@ant-design/icons';
 import EditModelStudent from './EditModelStudent.js';
 const Home = () => {
@@ -15,6 +15,7 @@ const Home = () => {
     const [selectedStudent, setSelectedStudent] = useState('')
     const [selectedStudentId, setSelectedStudentId] = useState('')
     const [loading, setLoading] = useState(false);
+    const [visibleDelete, setVisibleDelete] = useState(false);
     const [visible, setVisible] = useState(false);
     const getStudents = async () => {
         axios.get("http://localhost:3001/students").then((respose) => {
@@ -85,7 +86,7 @@ const Home = () => {
         {
             name: "Action",
             cell: row => <div>
-                <Button style={{ backgroundColor: "red", color: "white" }} onClick={() => handleDelete(row.id)}><CloseOutlined /></Button>
+                <Button style={{ backgroundColor: "red", color: "white" }} onClick={() => showModelDelete(row)}><CloseOutlined /></Button>
                 <Button type='primary' onClick={() => showModal(row)}><EditOutlined /></Button>
             </div>,
             ignoreRowClick: true,
@@ -110,12 +111,18 @@ const Home = () => {
 
 
     };
+    const showModelDelete = (value) => {
+        setVisibleDelete(true)
+        setSelectedStudent(value)
+
+    }
 
     const handleCancel = () => {
 
 
         form.resetFields();
         setVisible(false);
+        setVisibleDelete(false)
 
 
     };
@@ -130,17 +137,23 @@ const Home = () => {
 
 
     };
-    const handleDelete = async (id) => {
+    const handleDelete = async () => {
         setLoading(true);
         console.log(loading, "delete loading")
         try {
-            await axios.delete(`http://localhost:3001/students/findstudent/${id}`);
+            await axios.delete(`http://localhost:3001/students/findstudent/${selectedStudent.id}`);
             setLoading(false);
-            console.log(id)
+            console.log(selectedStudent.id)
         } catch (error) {
             setLoading(false);
             console.log(error.message);
         }
+        setVisibleDelete(false)
+        notification.success({
+            message: 'Student Deleted',
+            description: `The ${selectedStudent.name} profile was successfully deleted`,
+            placement: 'top'
+        });
     };
     createTheme('solarized', {
         text: {
@@ -187,6 +200,22 @@ const Home = () => {
                 // initialValues={{ selectedStudent }}
                 form={form}
             />
+            <Modal
+                open={visibleDelete}
+                title="Confirm Delete"
+                onOk={handleDelete}
+                onCancel={handleCancel}
+                footer={[
+                    <Button key="back" onClick={handleCancel}>
+                        Cancel
+                    </Button>,
+                    <Button key="submit" type="primary" onClick={handleDelete}>
+                        Confirm
+                    </Button>,
+                ]}
+            >
+                <p>Are you sure you want to delete this user?</p>
+            </Modal>
             <div className="dashboard-content-wrapper" >
                 <div className="dashboard-content-wrap">
                     <div className="page-title">
