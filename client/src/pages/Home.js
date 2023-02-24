@@ -27,9 +27,22 @@ const Home = () => {
     const editStudent = async (vales) => {
         console.log(loading, "loading value 1")
         axios.put(`http://localhost:3001/students/findstudent/${selectedStudentId}`, vales).then(
-            console.log("Student Successfully Updated", selectedStudentId,), setLoading(false), console.log(loading, "loading 2")).catch((err) => {
-                console.log(err)
+            console.log("Student Successfully Updated", selectedStudentId,), setLoading(false), console.log(loading, "loading 2"),
+            notification.success({
+                message: 'Success',
+                description: "Edited successfully",
+                placement: "top"
             })
+        ).catch((err) => {
+            console.log(err)
+            notification.error(
+                {
+                    message: "Error",
+                    description: err,
+                    placement: "top"
+                }
+            )
+        })
     }
     let location = useNavigate();
     const [form] = Form.useForm()

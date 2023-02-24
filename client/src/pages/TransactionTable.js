@@ -84,12 +84,8 @@ const TransactionTable = ({ loading }) => {
             secondary: 'black',
         },
         background: {
-
-            borderRadius: "10px",
-            header: {
-                backgroundColor: "#012369",
-                color: "white"
-            }
+            default: '#ffffff',
+            borderRadius: "10px"
         },
         context: {
             background: '#cb4b16',
@@ -98,8 +94,6 @@ const TransactionTable = ({ loading }) => {
         divider: {
             default: '#073642',
         },
-
-
         button: {
             default: 'black',
             hover: 'rgba(0,0,0,.08)',
@@ -107,6 +101,7 @@ const TransactionTable = ({ loading }) => {
             disabled: 'rgba(160, 160, 160, .34)'
 
         },
+
         action: {
             button: 'rgba(0,0,0,.54)',
             hover: 'rgba(0,0,0,.08)',

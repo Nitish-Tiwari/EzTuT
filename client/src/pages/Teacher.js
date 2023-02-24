@@ -218,9 +218,22 @@ const Teacher = () => {
     const editTeacher = async (vales) => {
         console.log(loading, "loading value 1")
         axios.put(`http://localhost:3001/teachers/findteacher/${selectedTeacherId}`, vales).then(
-            console.log("Teacher Successfully Updated", selectedTeacherId,), setLoading(false), console.log(loading, "loading 2")).catch((err) => {
-                console.log(err)
+            console.log("Teacher Successfully Updated", selectedTeacherId,), setLoading(false), console.log(loading, "loading 2"),
+            notification.success({
+                message: 'Success',
+                description: "Edited successfully",
+                placement: "top"
             })
+        ).catch((err) => {
+            console.log(err)
+            notification.error(
+                {
+                    message: "Error",
+                    description: err,
+                    placement: "top"
+                }
+            )
+        })
     }
     useEffect(() => {
         getTeachers();
