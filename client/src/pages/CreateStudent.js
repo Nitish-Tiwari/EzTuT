@@ -1,6 +1,6 @@
 import React from 'react'
 import "../css/createstudent.css"
-import { Col, Row } from 'antd';
+import { Col, message, notification, Row } from 'antd';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
@@ -18,11 +18,28 @@ const CreateStudent = () => {
         email: ""
 
     };
-    const onSubmit = (data) => {
+
+    const onSubmit = (data, { resetForm }) => {
         console.log(data)
         axios.post("http://localhost:3001/students", data).then((respose) => {
             console.log("data")
             console.log(data)
+        }).then(
+            notification.success({
+                message: 'Success',
+                description: "Student data saved successfully",
+                placement: "top"
+            }),
+
+            resetForm()
+        ).catch((err) => {
+            notification.error(
+                {
+                    message: "Error",
+                    description: err,
+                    placement: "top"
+                }
+            )
         })
     };
 

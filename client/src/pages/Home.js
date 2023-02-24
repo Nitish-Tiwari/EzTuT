@@ -214,7 +214,7 @@ const Home = () => {
                     </Button>,
                 ]}
             >
-                <p>Are you sure you want to delete this user?</p>
+                <p>Are you sure you want to delete this Student Data?</p>
             </Modal>
             <div className="dashboard-content-wrapper" >
                 <div className="dashboard-content-wrap">

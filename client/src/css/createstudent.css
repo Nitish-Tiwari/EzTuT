@@ -174,5 +174,12 @@
 
 .datatablestyle {
     border: 1px solid #cccc;
+    color: black;
+    background-color: white;
 
+}
+
+.rdt_TableCol {
+    background-color: #012369;
+    color: white;
 }

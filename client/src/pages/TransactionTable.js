@@ -84,8 +84,12 @@ const TransactionTable = ({ loading }) => {
             secondary: 'black',
         },
         background: {
-            default: '#ffffff',
-            borderRadius: "10px"
+
+            borderRadius: "10px",
+            header: {
+                backgroundColor: "#012369",
+                color: "white"
+            }
         },
         context: {
             background: '#cb4b16',
@@ -94,6 +98,8 @@ const TransactionTable = ({ loading }) => {
         divider: {
             default: '#073642',
         },
+
+
         button: {
             default: 'black',
             hover: 'rgba(0,0,0,.08)',
@@ -122,6 +128,7 @@ const TransactionTable = ({ loading }) => {
         <div className='datatablestyle'><DataTable
             title="Transaction List"
             columns={columns}
+
             data={[...filteredTransactions].reverse()}
             pagination
             theme="solarized"

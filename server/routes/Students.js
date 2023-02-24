@@ -27,7 +27,7 @@ router.post("/", async (req, res) => {
     const post = req.body
     try {
         await Students.create(post);
-        res.json(post);
+        res.json("Student successfully registered !");
     }
     catch (err) {
         res.json(err)

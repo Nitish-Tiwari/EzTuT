@@ -5,7 +5,7 @@ import DataTable, { createTheme } from "react-data-table-component"
 import "../css/createstudent.css"
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
-import { Button, Form } from "antd"
+import { Button, Form, notification } from "antd"
 import { SendOutlined } from '@ant-design/icons';
 import ReminderModel from './ReminderModel.js';
 const Home = () => {
@@ -25,10 +25,25 @@ const Home = () => {
     }
     const reminderStudent = async (vales) => {
         console.log(loading, "loading value 1")
-        axios.post(`http://localhost:3001/students/reminder`, vales).then(
-            console.log("Student Reminder Successfully Send", vales.message,), setLoading(false), console.log(loading, "loading 2")).catch((err) => {
-                console.log(err)
+        axios.post(`http://localhost:3001/students/reminder`, vales).then((resp) => {
+            console.log("Student Reminder Successfully Send", vales.message,)
+            setLoading(false)
+            console.log(loading, "loading 2")
+            notification.success({
+                message: 'Success',
+                description: "Message send successfully",
+                placement: "top"
             })
+        }
+        ).catch((err) => {
+            notification.error(
+                {
+                    message: "Error",
+                    description: err,
+                    placement: "top"
+                }
+            )
+        })
     }
     let location = useNavigate();
     const [form] = Form.useForm()

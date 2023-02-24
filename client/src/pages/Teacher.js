@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import DataTable, { createTheme } from "react-data-table-component";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { Row, Col } from 'antd';
+import { Row, Col, notification, Modal } from 'antd';
 import "../css/createstudent.css"
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
@@ -37,7 +37,7 @@ const Teacher = () => {
     });
     const [selectedTeacher, setSelectedTeacher] = useState('')
     const [selectedTeacherId, setSelectedTeacherId] = useState('')
-    const onSubmit = (data) => {
+    const onSubmit = (data, { resetForm }) => {
         setLoading(true)
         console.log(data)
 
@@ -45,6 +45,22 @@ const Teacher = () => {
         axios.post("http://localhost:3001/teachers", data).then((respose) => {
             console.log("data")
             setLoading(false)
+        }).then(
+            notification.success({
+                message: 'Success',
+                description: "Teacher data saved successfully",
+                placement: "top"
+            }),
+
+            resetForm()
+        ).catch((err) => {
+            notification.error(
+                {
+                    message: "Error",
+                    description: err,
+                    placement: "top"
+                }
+            )
         })
 
 
@@ -108,14 +124,37 @@ const Teacher = () => {
             name: "Action",
             cell: row =>
                 <div>
-                    <Button style={{ backgroundColor: "red", color: "white" }} onClick={() => handleDelete(row.id)}><CloseOutlined /></Button>
+                    <Button style={{ backgroundColor: "red", color: "white" }} onClick={showModalDelete}><CloseOutlined /></Button>
                     <Button type='primary' onClick={() => showModal(row)}><EditOutlined /></Button>
+                    <Modal
+                        title="Confirm Delete"
+                        open={visibleDelete}
+                        onCancel={handleCancelDelete}
+                        footer={[
+                            <Button key="cancel" onClick={handleCancelDelete}>
+                                Cancel
+                            </Button>,
+                            <Button key="delete" type="primary" loading={loading} onClick={() => handleDelete(row.id)}>
+                                Delete
+                            </Button>,
+                        ]}
+                    >
+                        <p>Are you sure you want to delete this teacher data?</p>
+                    </Modal>
                 </div>,
             ignoreRowClick: true,
             allowOverflow: true,
             button: true,
         }
     ];
+    const [visibleDelete, setVisibleDelete] = useState(false);
+    const showModalDelete = () => {
+        setVisibleDelete(true);
+    };
+
+    const handleCancelDelete = () => {
+        setVisibleDelete(false);
+    };
     const showModal = (value) => {
         setVisible(true)
         setSelectedTeacherId(value.id)
@@ -154,13 +193,27 @@ const Teacher = () => {
         setLoading(true);
 
         try {
-            await axios.delete(`http://localhost:3001/teachers/findteacher/${id}`);
+            await axios.delete(`http://localhost:3001/teachers/findteacher/${id}`).then(
+                notification.success({
+                    message: 'Success',
+                    description: "Teacher data deleted successfully",
+                    placement: "top"
+                })
+            )
             setLoading(false);
             console.log(id)
         } catch (error) {
             setLoading(false);
+            notification.error(
+                {
+                    message: "Error",
+                    description: error,
+                    placement: "top"
+                }
+            )
             console.log(error.message);
         }
+        setVisibleDelete(false);
     };
     const editTeacher = async (vales) => {
         console.log(loading, "loading value 1")
