@@ -2,6 +2,8 @@ const express = require("express")
 const fast2sms = require('fast-two-sms')
 const router = express.Router()
 const { Students } = require('../models');
+const { Exam } = require('../models')
+const { StudentExam } = require('../models')
 const Student = require("../models/Student.js");
 const Sequelize = require('sequelize');
 const env = process.env.NODE_ENV || 'development';
@@ -146,5 +148,40 @@ router.get("/getbatchname", async (req, res) => {
     console.log(finalResult)
     res.json(finalResult)
 })
+router.get('/exams', async (req, res) => {
+    const exams = await Exam.findAll({ include: StudentExam });
+    res.json(exams);
+});
+
+router.post('/exams', async (req, res) => {
+    const post = req.body;
+    console.log(req.body)
+
+    try {
+        console.log(post)
+        const exam = await Exam.create(post);
+
+        res.json({ message: "Exam created successfully!", exam });
+    } catch (err) {
+        console.log(err)
+        res.json(err);
+    }
+});
+router.post('/student-exams', async (req, res) => {
+    const { examId, students } = req.body;
+    try {
+        for (const student of students) {
+            const { studentId, marks } = student;
+            const studentExam = await StudentExam.create({ marks });
+            const exam = await Exam.findByPk(examId);
+            const student = await Students.findByPk(studentId);
+            await exam.addStudentExam(studentExam);
+            await student.addStudentExam(studentExam);
+        }
+        res.json({ message: "Student exams added successfully!" });
+    } catch (err) {
+        res.json(err);
+    }
+});
 
 module.exports = router;
