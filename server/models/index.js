@@ -15,6 +15,7 @@ if (config.use_env_variable) {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
 
+
 fs
   .readdirSync(__dirname)
   .filter(file => {
@@ -31,7 +32,21 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
+
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+const StudentModel = require('./Student.js')(sequelize, Sequelize.DataTypes);
+const ExamModel = require('./Exam.js')(sequelize, Sequelize.DataTypes);
+const StudentExamModel = require('./StudentExam.js')(sequelize, Sequelize.DataTypes);
+db.Student = StudentModel;
+db.Exam = ExamModel;
+db.StudentExam = StudentExamModel;
+
+// Define associations between models
+ExamModel.hasMany(StudentExamModel);
+StudentExamModel.belongsTo(ExamModel);
+
+StudentModel.hasMany(StudentExamModel);
+StudentExamModel.belongsTo(StudentModel);
 
 module.exports = db;

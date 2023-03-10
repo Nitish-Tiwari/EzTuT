@@ -16,9 +16,15 @@ app.use("/transactions", transactionRouter);
 app.use("/dashboard", dashboardRouter);
 
 
-db.sequelize.sync().then(() => {
-    app.listen(3001, () => {
-        console.log("Server Running on port 3001");
+db.sequelize.authenticate()
+    .then(() => {
+        console.log('Database connection has been established successfully.');
+    })
+    .catch(err => {
+        console.error('Unable to connect to the database:', err);
     });
+
+app.listen(3001, () => {
+    console.log('Server running on port 3001');
 });
 

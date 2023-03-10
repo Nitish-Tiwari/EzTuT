@@ -183,3 +183,32 @@
     background-color: #012369;
     color: white;
 }
+
+.examtable {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white;
+    padding: 15px 25px;
+    border-radius: 25px;
+    margin-bottom: 10px;
+    text-align: center;
+
+}
+
+.examaction button {
+    margin: 0 5px
+}
+
+.spanname {
+    border: 1px solid #ccc;
+    padding: 6px 42px;
+    border-radius: 5px;
+}
+
+.formitem {
+    margin-top: 5px;
+    margin-left: -19px;
+    display: flex;
+    justify-content: space-around;
+}

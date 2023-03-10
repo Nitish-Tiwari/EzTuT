@@ -41,5 +41,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
         },
     });
-    return Students
+
+
+    // define relationships
+
+    return Students;
 }

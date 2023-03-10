@@ -2,6 +2,8 @@ const express = require("express")
 const fast2sms = require('fast-two-sms')
 const router = express.Router()
 const { Students } = require('../models');
+const { Exam } = require('../models')
+const { StudentExam } = require('../models')
 const Student = require("../models/Student.js");
 const Sequelize = require('sequelize');
 const env = process.env.NODE_ENV || 'development';
@@ -41,7 +43,35 @@ router.get('/findstudent/:id', async (req, res) => {
     const studentid = req.params.id
     const result = await sequelize.query(`SELECT * FROM eztutdb.transactions WHERE personid = '${studentid}' AND typeofperson = 'student'`,
         { type: sequelize.QueryTypes.SELECT })
-    res.json({ student: findstudent, transactions: result })
+    const resultexam = await sequelize.query(`SELECT * FROM eztutdb.studentexams WHERE StudentId = '${studentid}'`,
+        { type: sequelize.QueryTypes.SELECT })
+
+    const examId = resultexam.map((e) => {
+        return e.examId
+    })
+    console.log(examId)
+    if (examId.length !== 0) {
+        const averagemarks = await sequelize.query(`SELECT examId, AVG(marks) AS average_marks FROM eztutdb.studentexams WHERE examId IN (${examId.join(', ')}) GROUP BY examId`, {
+            type: Sequelize.QueryTypes.SELECT
+        })
+        const exams = await Exam.findAll({
+            attributes: ['id', 'name'], // Select both the exam ID and examName columns
+            where: {
+                id: examId // Find exams with the specified IDs
+            }
+        });
+
+        const resultexamname = exams.map(exam => {
+            return { examId: exam.id, exam_name: exam.name };
+        });
+
+
+        console.log(averagemarks, resultexamname)
+        res.json({ student: findstudent, transactions: result, examresult: resultexam, averagemakrs: averagemarks, examname: resultexamname })
+    }
+    else {
+        res.json({ student: findstudent, transactions: result })
+    }
 })
 router.post('/reminder', async (req, res) => {
     const body = req.body
@@ -146,5 +176,51 @@ router.get("/getbatchname", async (req, res) => {
     console.log(finalResult)
     res.json(finalResult)
 })
+router.get('/exams', async (req, res) => {
+    const exams = await Exam.findAll({ include: StudentExam });
+    res.json(exams);
+});
+
+router.post('/exams', async (req, res) => {
+    const post = req.body;
+    console.log(req.body)
+
+    try {
+        console.log(post)
+        const exam = await Exam.create(post);
+
+        res.json({ message: "Exam created successfully!", exam });
+    } catch (err) {
+        console.log(err)
+        res.json(err);
+    }
+});
+router.post('/student-exams', async (req, res) => {
+    const { examId, students } = req.body;
+    console.log(`Number of students: ${students.length}`);
+    try {
+        for (const student of students) {
+            const { StudentId, marks } = student;
+            console.log(`Processing student with ID ${StudentId} and marks ${marks}`);
+            try {
+                const studentExam = await StudentExam.create({ marks, StudentId });
+                const exam = await Exam.findByPk(examId);
+
+                const studentObj = await Students.findByPk(StudentId);
+
+                await exam.addStudentExam(studentExam);
+
+                await studentObj.addStudentExam(studentExam);
+
+            } catch (err) {
+                console.error(`Error adding student exam: ${err}`);
+            }
+        }
+
+        res.json({ message: "Student exams added successfully!" });
+    } catch (err) {
+        res.json(err);
+    }
+});
 
 module.exports = router;

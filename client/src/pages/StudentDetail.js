@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import moment from 'moment';
 import DataTable, { createTheme } from 'react-data-table-component';
+import ExamChat from './Charts/ExamChat.js';
 const StudentDetail = () => {
     let { id } = useParams();
     const [studentData, setStudentData] = useState(null)
@@ -127,11 +128,16 @@ const StudentDetail = () => {
                             <div className="page_title">
                                 <h1>Academic Performance</h1>
                             </div>
-                            <Row gutter={6} className="student_section">
+
+                            {studentData && studentData.hasOwnProperty("examresult") !== false ? <Row gutter={6} className="student_section" style={{ display: "flex", justifyContent: "center" }}>
                                 <Col flex="400px" lg={12} md={12} sm={12} xs={24} >
-                                    Charts
+                                    <ExamChat data={studentData} />
                                 </Col>
-                            </Row>
+                            </Row> : <Row gutter={6} className="student_section" style={{ display: "flex", justifyContent: "center" }}>
+                                <Col flex="400px" lg={12} md={12} sm={12} xs={24} >
+                                    <h3>No Exam Data</h3>
+                                </Col>
+                            </Row>}
                         </div>
                         <div className="transactions_details_section">
                             <div className="page_title">
