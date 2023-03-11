@@ -176,51 +176,5 @@ router.get("/getbatchname", async (req, res) => {
     console.log(finalResult)
     res.json(finalResult)
 })
-router.get('/exams', async (req, res) => {
-    const exams = await Exam.findAll({ include: StudentExam });
-    res.json(exams);
-});
-
-router.post('/exams', async (req, res) => {
-    const post = req.body;
-    console.log(req.body)
-
-    try {
-        console.log(post)
-        const exam = await Exam.create(post);
-
-        res.json({ message: "Exam created successfully!", exam });
-    } catch (err) {
-        console.log(err)
-        res.json(err);
-    }
-});
-router.post('/student-exams', async (req, res) => {
-    const { examId, students } = req.body;
-    console.log(`Number of students: ${students.length}`);
-    try {
-        for (const student of students) {
-            const { StudentId, marks } = student;
-            console.log(`Processing student with ID ${StudentId} and marks ${marks}`);
-            try {
-                const studentExam = await StudentExam.create({ marks, StudentId });
-                const exam = await Exam.findByPk(examId);
-
-                const studentObj = await Students.findByPk(StudentId);
-
-                await exam.addStudentExam(studentExam);
-
-                await studentObj.addStudentExam(studentExam);
-
-            } catch (err) {
-                console.error(`Error adding student exam: ${err}`);
-            }
-        }
-
-        res.json({ message: "Student exams added successfully!" });
-    } catch (err) {
-        res.json(err);
-    }
-});
 
 module.exports = router;
