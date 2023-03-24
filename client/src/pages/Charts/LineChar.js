@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
+import { Line } from 'react-chartjs-2';
+import axios from 'axios';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -9,9 +11,6 @@ import {
     Tooltip,
     Legend,
 } from 'chart.js';
-import { Line } from 'react-chartjs-2';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -21,86 +20,71 @@ ChartJS.register(
     Tooltip,
     Legend
 );
-function LineChar() {
-    const [chartdata, setchartdata] = useState({})
 
+function LineChart(dataRange) {
+    const [chartData, setChartData] = useState({});
+    console.log(dataRange)
     useEffect(() => {
-        const fetechdata = async () => {
-            const { data } = await axios.get("http://localhost:3001/students/monthfee")
+        const fetchData = async () => {
+            let url = `http://localhost:3001/dashboard/tranctiondetail/${dataRange.data}`;
+            let label = 'Revenue';
 
+            const { data } = await axios.get(url);
             console.log(data)
-
-            setchartdata({
-                labels: data.map((item) => item.Month_Wise),
+            setChartData({
+                labels: data.map((item) => item.date),
                 datasets: [
                     {
-                        label: "Revenue",
-                        data: data.map((item) => item.Sales_Value
-                        ),
+                        label: "income",
+                        data: data.map((item) => item.income),
                         fill: true,
-                        borderColor: "rgb(255,99,132)",
-                        backgroundColor: "rgba(255,99,132,0.3)"
+                        borderColor: 'rgb(53, 162, 235)',
+                        backgroundColor: 'rgba(53, 162, 235, 0.5)',
                     },
                     {
-                        label: "Expense",
-                        data: data.map((item) => item.Sales_Value
-                        ),
+                        label: 'Expense',
+                        data: data.map((item) => item.expense),
                         fill: true,
-                        borderColor: "rgb(53, 162, 235)",
-                        backgroundColor: "rgba(53, 162, 235, 0.5)"
-                    }
-                ]
-            })
-        }
-        fetechdata()
-    }, [])
+                        borderColor: 'rgb(255, 99, 132)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.3)',
 
-
-    // const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-
-    // const data = {
-    //     labels,
-    //     datasets: [
-    //         {
-    //             label: 'Expense',
-    //             data: [25000, 20000, 5000, 30000, 20000, 22000, 53000],
-    //             borderColor: 'rgb(255, 99, 132)',
-    //             fill: false,
-    //             backgroundColor: 'rgba(255, 99, 132, 0.5)',
-
-
-    //         },
-    //         {
-    //             label: 'Income',
-    //             data: [30000, 42000, 51000, 22000, 35000, 40000, 54000],
-    //             borderColor: 'rgb(53, 162, 235)',
-    //             fill: true,
-    //             backgroundColor: 'rgba(53, 162, 235, 0.5)',
-
-    //         },
-    //     ],
-    // };
-
+                    },
+                ],
+            });
+        };
+        fetchData();
+    }, [dataRange]);
 
 
 
     return (
-        <div>{chartdata && chartdata.datasets && (<Line
-            width={"100%"}
-            height={"50%"}
-            data={chartdata}
-            options={
-                {
-                    responsive: true,
-                    plugins: {
-                        legend: { position: "top" },
-                        title: { display: true, text: "Revenue" }
-                    }
-                }
-            }
-        />)}</div>
-    )
+        <div>
 
+            {chartData && chartData.datasets && (
+                <Line
+                    width={'100%'}
+                    height={'50%'}
+                    data={chartData}
 
+                    options={{
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top' },
+                            title: {
+                                display: true,
+                                text: "Income/Expense",
+                            },
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                            },
+                        },
+                    }}
+                />
+            )}
+        </div>
+    );
 }
-export default LineChar
+
+export default LineChart;

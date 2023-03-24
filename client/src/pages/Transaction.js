@@ -1,7 +1,7 @@
 import axios from 'axios';
 import '../css/createstudent.css';
 import React, { useState, useEffect } from 'react'
-import { Row, Col, Select } from 'antd';
+import { Row, Col, Select, notification } from 'antd';
 import TransactionTable from './TransactionTable.js';
 
 const Transaction = () => {
@@ -36,9 +36,23 @@ const Transaction = () => {
         axios.post("http://localhost:3001/transactions", ({ "name": selectedStudent, "typeofperson": selectedOption, "personid": getSelectedStudentData().id, "batchname": selectedBatchname, "phonenumber": getSelectedStudentData().phonenumber, "amount": paymentAmount, "amounttype": paymentMethod, "typeofamount": "income" })).then(
             console.log("Transaction Successfull"),
             setLoading(false)
-        )
+        ).then(() => {
+            setLoading(false);
+            notification.success({
+                message: "Transaction Successful",
+                placement: 'top'
+            });
+        })
+            .catch((error) => {
+                setLoading(false);
+                notification.error({
+                    message: "Transaction Failed",
+                    description: error.message,
+                    placement: 'top'
+                })
+            })
         console.log({ "name": selectedStudent, "typeofperson": selectedOption, "personid": getSelectedStudentData().id, "batchname": selectedBatchname, "phonenumber": getSelectedStudentData().phonenumber, "amount": paymentAmount, "amounttype": paymentMethod, "typeofamount": "income" })
-        setPaymentAmount("")
+        setPaymentAmount(0)
         setLoading(true);
         axios.put(`http://localhost:3001/students/findstudent/${getSelectedStudentData().id}`, { "paidfee": (parseInt(paymentAmount) + parseInt(getSelectedStudentData().paidfee)) }).then(
             console.log("Student Paid Fee Successfully Updated", getSelectedStudentData().id), setLoading(false), console.log(loading, "loading 2")).catch((err) => {
@@ -52,9 +66,23 @@ const Transaction = () => {
         axios.post("http://localhost:3001/transactions", ({ "name": selectedTeacher, "typeofperson": selectedOption, "personid": getSelectedTeacherData().id, "phonenumber": getSelectedTeacherData().phonenumber, "amount": paymentAmount, "amounttype": paymentMethod, "typeofamount": "expense" })).then(
             console.log("Transaction Successfull"),
             setLoading(false)
-        )
+        ).then(() => {
+            setLoading(false);
+            notification.success({
+                message: "Transaction Successful",
+                placement: 'top'
+            });
+        })
+            .catch((error) => {
+                setLoading(false);
+                notification.error({
+                    message: "Transaction Failed",
+                    description: error.message,
+                    placement: 'top'
+                })
+            })
         console.log({ "name": selectedTeacher, "typeofperson": selectedOption, "personid": getSelectedTeacherData().id, "phonenumber": getSelectedTeacherData().phonenumber, "amount": paymentAmount, "amounttype": paymentMethod, "typeofamount": "expense" })
-        setPaymentAmount("")
+        setPaymentAmount(0)
         setLoading(true);
         axios.put(`http://localhost:3001/teachers/findteacher/${getSelectedTeacherData().id}`, { "paidsalary": (parseInt(paymentAmount) + parseInt(getSelectedTeacherData().paidsalary)) }).then(
             console.log("Teacher Paid Salary Successfully Updated", getSelectedTeacherData().id), setLoading(false), console.log(loading, "loading 2")).catch((err) => {

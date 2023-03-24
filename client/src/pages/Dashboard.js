@@ -5,12 +5,19 @@ import LineChar from './Charts/LineChar.js';
 import '../css/dashboard.css'
 
 import TransactionTable from './TransactionTable.js';
+import Link from 'antd/es/typography/Link.js';
 
 const Dashboard = () => {
     const [countStudent, setCountStudent] = useState([]);
     const [feeStudent, setFeeStudent] = useState([]);
     const [countTeacher, setCountTeacher] = useState([]);
-    const [feeTeacher, setFeeTeacher] = useState([]);
+    const [selectedDateRange, setSelectedDateRange] = useState('today');
+    const [activeButton, setActiveButton] = useState(0);
+    const handleDateClick = (index, value) => {
+        setActiveButton(index)
+
+        setSelectedDateRange(value)
+    }
     const getStudentscount = async () => {
         axios.get("http://localhost:3001/students/studentcount").then((respose) => {
             setCountStudent(respose.data)
@@ -28,6 +35,7 @@ const Dashboard = () => {
             setCountTeacher(respose.data)
         })
     }
+
 
     useEffect(() => {
         getStudentscount();
@@ -100,12 +108,57 @@ const Dashboard = () => {
                                         <h4 className="single-wrapper-common-tittle overview">Overview</h4>
 
                                     </div>
-                                    <div className="line-chart-wrap"><LineChar /></div>
+                                    <div className='daterangebutton'>
+                                        <button
+                                            className={activeButton === 0 ? 'active' : ''}
+                                            onClick={() => handleDateClick(0, "today")}
+                                        >
+                                            Today
+                                        </button>
+                                        <button
+                                            className={activeButton === 1 ? 'active' : ''}
+                                            onClick={() => handleDateClick(1, "yesterday")}
+                                        >
+                                            Yesterday
+                                        </button>
+                                        <button
+                                            className={activeButton === 2 ? 'active' : ''}
+                                            onClick={() => handleDateClick(2, "thisweek")}
+                                        >
+                                            This Week
+                                        </button>
+                                        <button
+                                            className={activeButton === 3 ? 'active' : ''}
+                                            onClick={() => handleDateClick(3, "lastweek")}
+                                        >
+                                            Last Week
+                                        </button>
+                                        <button
+                                            className={activeButton === 4 ? 'active' : ''}
+                                            onClick={() => handleDateClick(4, "thismonth")}
+                                        >
+                                            This Month
+                                        </button>
+                                        <button
+                                            className={activeButton === 5 ? 'active' : ''}
+                                            onClick={() => handleDateClick(5, "lastmonth")}
+                                        >
+                                            Last Month
+                                        </button>
+                                        <button
+                                            className={activeButton === 6 ? 'active' : ''}
+                                            onClick={() => handleDateClick(6, "thisyear")}
+                                        >
+                                            This Year
+                                        </button>
+                                    </div>
+                                    <div className="line-chart-wrap"><LineChar data={selectedDateRange} /></div>
                                 </div>
                             </div>
                         </div>
 
                         <div >
+
                             <TransactionTable />
                         </div>
 

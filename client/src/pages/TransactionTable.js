@@ -111,7 +111,10 @@ const TransactionTable = ({ loading }) => {
     }, 'dark');
     useEffect(() => {
         getTransactions();
-    }, [loading, loadingpage]);
+    }, [loadingpage]);
+    useEffect(() => {
+        getTransactions();
+    }, [loading])
     useEffect(() => {
         const result = listofTransactions.filter((transaction) => {
             return transaction.name.toLowerCase().match(search.toLocaleLowerCase());

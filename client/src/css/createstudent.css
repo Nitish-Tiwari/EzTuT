@@ -212,3 +212,12 @@
     display: flex;
     justify-content: space-around;
 }
+
+.examTitle {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 5px;
+}

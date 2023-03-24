@@ -1,9 +1,10 @@
-import { Button, Form, Input, Modal, notification, Select } from 'antd'
+import { Button, Form, Input, Modal, notification, Select, Table } from 'antd'
 import axios from 'axios'
 import "../css/createstudent.css"
 import React, { useEffect, useRef, useState } from 'react'
 import moment from 'moment'
 import useStateRef from 'react-usestateref'
+import FormItem from 'antd/es/form/FormItem/index.js'
 const ExamPage = () => {
     const [visible, setVisible] = useState(false)
     const [addVisible, setAddvisible] = useState(false)
@@ -14,10 +15,14 @@ const ExamPage = () => {
     const [formadd] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [examData, setExamData] = useState(false)
+    const [updatedVisible, setUpdatedVisible] = useState(false)
     const [studentData, setStudentData] = useState([])
     const [selectedBatchname, setSelectedBatchname] = useState(null);
     const [batchnameStudentData, setBatchnameStudentData] = useState('')
     const [selectedStudents, setSelectedStudents] = useState("")
+    const [selectedExam, setSelectedExam] = useState("")
+    const [visibleDelete, setVisibleDelete] = useState(false);
+    const [visibleView, setVisibleView] = useState(false)
     const getStudentData = () => {
         axios.get("http://localhost:3001/students/getbatchname").then((data) => {
             setStudentData(data.data)
@@ -30,7 +35,7 @@ const ExamPage = () => {
         axios.post("http://localhost:3001/students/exams", value).then((resp) => {
             notification.success({
                 message: 'Success',
-                description: `${resp.message}`,
+                description: 'Exam created Successfully',
                 placement: "top"
             })
             setLoading(false)
@@ -129,26 +134,31 @@ const ExamPage = () => {
         const datastudent = studentData.find(data => data.batchname === event)
         console.log(datastudent, "data")
         setBatchnameStudentData(datastudent)
+        const studentdata = datastudent.students.map((e) => ({ StudentId: e.id }))
         setSelectedStudents(datastudent.students.map((e) => ({ StudentId: e.id })))
+        formadd.setFieldsValue({
+            students: studentdata
+        })
         setLoading(true)
     };
     console.log(batchnameStudentData, "batchnameStudentData")
     const onCancel = () => {
         setVisible(false)
+        setVisibleView(false)
 
     }
     console.log(selectedStudents, "selectedStudents")
     const handleClickAdd = (val) => {
-
         formadd.setFieldsValue({
             examId: val.id,
-            students: selectedStudents
-
         })
+
         setAddvisible(true)
     }
     const onCancelAdd = () => {
         setAddvisible(false)
+        setUpdatedVisible(false)
+
 
     }
     const getBatchnameOptions = () => {
@@ -187,6 +197,69 @@ const ExamPage = () => {
 
         </>
         ));
+    };
+    const handleUpdate = (value) => {
+        setSelectedExam(value)
+
+        console.log(value, "value")
+        setUpdatedVisible(true)
+    }
+    const handleNewUpdate = (value) => {
+        console.log(value, "valueasdas")
+    }
+    const handleOnUpdateFinish = (value) => {
+        console.log(value, "valueasdas")
+    }
+    const handleViewResult = (value) => {
+        setSelectedExam(value)
+        setVisibleView(true)
+    }
+    const showModelDelete = (value) => {
+        setVisibleDelete(true)
+        setSelectedExam(value)
+
+    }
+    const handleDelete = async () => {
+        setLoading(true);
+        console.log(loading, "delete loading")
+        console.log(selectedExam, 'selectedExamdelete')
+
+        try {
+            await axios.delete(`http://localhost:3001/students/exams/${selectedExam.id}`);
+            setLoading(false);
+            console.log(selectedExam.id)
+        } catch (error) {
+            setLoading(false);
+            console.log(error.message);
+        }
+        setVisibleDelete(false)
+        notification.success({
+            message: 'Student Deleted',
+            description: `The ${selectedExam.name} profile was successfully deleted`,
+            placement: 'top'
+        });
+    };
+    const columns = [
+        {
+            title: 'Name',
+            dataIndex: 'name',
+            key: 'name',
+            sorter: (a, b) => a.name.localeCompare(b.name),
+        },
+        {
+            title: 'Marks',
+            dataIndex: 'marks',
+            key: 'marks',
+            sorter: (a, b) => a.marks - b.marks,
+        },
+    ];
+    const handleCancel = () => {
+
+
+
+        setVisibleDelete(false)
+
+
     };
 
 
@@ -246,49 +319,130 @@ const ExamPage = () => {
                                     <p>{moment(e.createdAt).format("DD/MM/YYYY")}</p>
                                 </div>
                                 <div className='examaction'>
-                                    {e.studentExams.length !== 0 ? <Button >Update stundets</Button> : <Button onClick={() => handleClickAdd(e)}>Add stundets</Button>}
-                                    <Button>View Result</Button>
-                                    <Button>Delete Exam</Button>
+                                    {e.studentExams.length !== 0 ? <Button onClick={() => handleUpdate(e)}>Update stundets</Button> : <Button onClick={() => handleClickAdd(e)}>Add stundets</Button>}
+                                    <Button onClick={() => handleViewResult(e)}>View Result</Button>
+
+                                    <Button onClick={() => showModelDelete(e)}>Delete Exam</Button>
                                 </div>
-                                <Modal
-                                    open={addVisible}
-                                    title="Enter Exam Marks"
-                                    okText={loading ? 'Loading...' : 'Add'}
-                                    onCancel={onCancelAdd}
-                                    onOk={handleCreateAdd}
-                                    confirmLoading={loading}>
-                                    <Form
-                                        form={formadd}
-                                        layout="vertical"
-                                        name="exam-form"
-                                        onFinish={handleOnFinish}
 
-                                    >
-                                        <Form.Item
-                                            name="examId"
-                                            label="Exam Name"
 
-                                        >
-                                            <Input disabled />
-                                        </Form.Item>
-                                        <div style={{ marginBottom: "12px" }}>
-                                            <div className="info_title">
-                                                <h4>Batch Name</h4>
-                                            </div>
-                                            <Select style={{ width: "200px" }} value={selectedBatchname} onChange={handleBatchnameSelect}>
-                                                <Select.Option value="">Select Batchname</Select.Option>
-                                                {getBatchnameOptions()}
-                                            </Select>
-                                        </div>
-                                        {selectedBatchname && (
-
-                                            getStudentOptions()
-
-                                        )}
-                                    </Form>
-                                </Modal>
                             </div>)
                     })}
+                    <Modal
+                        open={addVisible}
+                        title="Enter Exam Marks"
+                        okText={loading ? 'Loading...' : 'Add'}
+                        onCancel={onCancelAdd}
+                        onOk={handleCreateAdd}
+                        confirmLoading={loading}>
+                        <Form
+                            form={formadd}
+                            layout="vertical"
+                            name="exam-form"
+                            onFinish={handleOnFinish}
+
+                        >
+
+                            <Form.Item
+                                name="examId"
+                                label="Exam Name"
+
+                            >
+                                <Input disabled />
+
+                            </Form.Item>
+                            <div style={{ marginBottom: "12px" }}>
+                                <div className="info_title">
+                                    <h4>Batch Name</h4>
+                                </div>
+                                <Select style={{ width: "200px" }} value={selectedBatchname} onChange={handleBatchnameSelect}>
+                                    <Select.Option value="">Select Batchname</Select.Option>
+                                    {getBatchnameOptions()}
+                                </Select>
+                            </div>
+                            {selectedBatchname && selectedStudents && (
+
+                                getStudentOptions()
+
+                            )}
+                        </Form>
+                    </Modal>
+                    {selectedExam && <Modal
+                        open={updatedVisible}
+                        title="Update Exam Marks"
+                        onCancel={onCancelAdd}
+                        onOk={handleNewUpdate}
+                    >
+                        <Form
+                            form={formadd}
+                            layout="vertical"
+                            name="exam-form"
+                            onFinish={handleOnUpdateFinish}
+                        >
+                            <FormItem
+                                name="examId"
+                            >
+                                <Input disabled defaultValue={selectedExam.id}></Input>
+                            </FormItem>
+                            {selectedExam.studentExams.map((e) => <FormItem
+                                name={e.StudentId}
+
+                            >
+                                <label>{e.StudentId}</label>
+                                <Input defaultValue={e.marks}></Input>
+                            </FormItem>)
+                            }
+                        </Form>
+                    </Modal>}
+                    {selectedExam && <Modal
+                        open={visibleView}
+                        title="View Result"
+                        onCancel={onCancel}
+                        okButtonProps={{ style: { display: 'none' } }}
+                        cancelText="close"
+                    >
+                        <div className='examTitle'>
+                            <h3>{selectedExam.name}</h3>
+                            <h4>Created By : {selectedExam.createdBy}</h4>
+                        </div>
+                        <div style={{ margin: "10px 5px" }}>
+                            <h4>Average Marks : {selectedExam.studentExams.reduce((total, exam) => {
+                                return total + exam.marks;
+                            }, 0) / selectedExam.studentExams.length}</h4>
+                        </div>
+                        {console.log(selectedExam, "selectedExam")}
+
+
+                        {selectedExam && <Table
+                            columns={columns}
+                            dataSource={selectedExam.studentExams.map((data) => {
+                                return {
+                                    key: data.id,
+                                    name: data.Student.name,
+                                    marks: data.marks,
+                                };
+                            })}
+                            pagination={{ defaultPageSize: 10 }}
+
+                        />}
+
+                    </Modal>}
+                    {selectedExam && <Modal
+                        open={visibleDelete}
+                        title="Confirm Delete"
+                        onOk={handleDelete}
+                        onCancel={handleCancel}
+                        footer={[
+                            <Button key="back" onClick={handleCancel}>
+                                Cancel
+                            </Button>,
+                            <Button key="submit" type="primary" onClick={handleDelete}>
+                                Confirm
+                            </Button>,
+                        ]}
+                    >
+                        <p>Are you sure you want to delete this Student Data?</p>
+                    </Modal>}
                 </div>
             </div>
         </div>
