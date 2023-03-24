@@ -43,10 +43,10 @@ db.Exam = ExamModel;
 db.StudentExam = StudentExamModel;
 
 // Define associations between models
-ExamModel.hasMany(StudentExamModel);
+ExamModel.hasMany(StudentExamModel, { onDelete: 'CASCADE', hooks: true });
 StudentExamModel.belongsTo(ExamModel);
 
-StudentModel.hasMany(StudentExamModel);
+StudentModel.hasMany(StudentExamModel, { onDelete: 'CASCADE', hooks: true });
 StudentExamModel.belongsTo(StudentModel);
 
 module.exports = db;
