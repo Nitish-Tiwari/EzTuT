@@ -1,16 +1,19 @@
 import React from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import '../css/navbar.css'
 import eztutlogo from '../images/Eztut-logo.png'
 import profile from '../images/Nitish Tiwari.jpg'
 import studentlogo from '../images/students.png'
 import teacherlogo from '../images/teachers.png'
 import registrationlogo from "../images/registration.png"
+import { notification } from 'antd'
 const Navbar = () => {
     const mystyle = {
         width: "30px",
         height: "30px"
     }
+    let navigate = useNavigate()
+    let userRole = localStorage.getItem("eztutuserRole")
     const logostyle = {
         width: "100%",
         height: "100%",
@@ -22,6 +25,20 @@ const Navbar = () => {
             color: isActive ? "#fff" : "",
         }
     }
+    const location = useLocation()
+    if (location.pathname === '/login' || location.pathname === "/") {
+        return null;
+    }
+    const handleLogout = () => {
+        localStorage.clear()
+        navigate('/login')
+        notification.success({
+            message: 'Success',
+            description: "Logout successfully",
+            placement: "top"
+        })
+    }
+    let userDetails = JSON.parse(localStorage.getItem("eztutuserDetails"))
     return (
         <>
             <div className="topbar-wrapper">
@@ -46,17 +63,14 @@ const Navbar = () => {
                                 className="dropdown w-dropdown"
                             >
                                 <div className="dropdown-button w-dropdown-toggle">
-                                    <div className="profile-image">
-                                        <img
-                                            src={profile}
-                                            loading="lazy"
-                                            alt="profile"
-                                        />
-                                    </div>
+
                                     <div>
                                         <div className="welcome">Welcome</div>
-                                        <div className="dropdown-button-text">Nitish Tiwari</div>
+                                        <div className="dropdown-button-text">{userDetails.name}</div>
                                         <div className="dropdown-icon w-icon-dropdown-toggle" />
+                                    </div>
+                                    <div className="profile-image">
+                                        <button className='logoutbtn' onClick={handleLogout}>Logout</button>
                                     </div>
                                 </div>
                                 <nav className="profile-dropdown-list w-dropdown-list">
@@ -79,7 +93,7 @@ const Navbar = () => {
                     </div>
                 </div>
             </div>
-            <div className="side-navbar-wrapper">
+            {userRole != "student" && <div className="side-navbar-wrapper">
                 <div className="sidebar-logo-wrapper">
                     <Link to="/" className="w-inline-block">
                         <img
@@ -184,7 +198,7 @@ const Navbar = () => {
                     <div className="single-nav-link-text">Profile</div>
                 </NavLink> */}
 
-            </div>
+            </div>}
         </>
     )
 }

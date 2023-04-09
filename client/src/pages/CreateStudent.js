@@ -24,15 +24,13 @@ const CreateStudent = () => {
         axios.post("http://localhost:3001/students", data).then((respose) => {
             console.log("data")
             console.log(data)
-        }).then(
             notification.success({
                 message: 'Success',
                 description: "Student data saved successfully",
                 placement: "top"
-            }),
-
+            })
             resetForm()
-        ).catch((err) => {
+        }).catch((err) => {
             notification.error(
                 {
                     message: "Error",

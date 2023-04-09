@@ -16,8 +16,17 @@ import StudentDetail from './pages/StudentDetail.js';
 import TeacherDetail from './pages/TeacherDetail.js';
 import ReminderPage from './pages/ReminderPage.js';
 import ExamPage from './pages/ExamPage.js';
+import Login from './pages/Login.js';
+import { useEffect } from 'react';
+
+
+
+
 
 function App() {
+
+
+
   return <div className='App'>
     <Router>
       <Navbar />
@@ -33,7 +42,8 @@ function App() {
         <Route exact path='/test' element={<Test />}></Route>
         <Route exact path='/reminder' element={<ReminderPage />}></Route>
         <Route exact path='/exam' element={<ExamPage />}></Route>
-        <Route exact path='/' element={<Dashboard />}></Route>
+        <Route exact path='/login' element={<Login />} />
+        <Route exact path='/' element={<Login />} />
       </Routes>
     </Router>
   </div>

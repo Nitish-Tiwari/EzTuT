@@ -196,3 +196,16 @@
 /* ::-webkit-scrollbar {
     display: none;
 } */
+.logoutbtn {
+    padding: 13px;
+    background: transparent;
+    border: 1px solid #ccc;
+    border-radius: 50px;
+    transition: background-color 0.5s ease;
+    transition: color 0.5s ease;
+}
+
+.logoutbtn:hover {
+    background-color: #00162f;
+    color: white;
+}

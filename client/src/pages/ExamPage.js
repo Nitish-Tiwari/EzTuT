@@ -441,7 +441,7 @@ const ExamPage = () => {
                             </Button>,
                         ]}
                     >
-                        <p>Are you sure you want to delete this Student Data?</p>
+                        <p>Are you sure you want to delete this Exam?</p>
                     </Modal>}
                 </div>
             </div>

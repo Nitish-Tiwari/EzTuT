@@ -76,7 +76,7 @@ const StudentDetail = () => {
 
     return (
         <div className="page-wrapper">
-            <div className="dashboard-content-wrapper">
+            <div className="dashboard-content-wrapper" style={localStorage.getItem("eztutuserRole") == "student" ? { marginLeft: "115px" } : {}}>
                 <div className="dashboard-content-wrap">
                     <div className='container'>
                         <div className="personal_detail_section">
