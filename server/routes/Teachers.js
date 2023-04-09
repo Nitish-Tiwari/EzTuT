@@ -23,14 +23,56 @@ router.get('/', async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
+    const post = req.body
+    const password = crypto.randomBytes(4).toString('hex');
     try {
-        const post = req.body
-        await Teachers.create(post);
-        res.json(post);
-    } catch (err) {
-        res.json(err);
+        await Teachers.create({ ...post, password });
+        let mailTransporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: "kakarotgoku1529@gmail.com",
+                pass: "furtoimuiyfdjimn"
+            }
+        })
+        let details = {
+            from: "kakarotgoku1529",
+            to: post.email,
+            subject: 'New Password',
+            text: `Thank You for Joining
+            Your email is ${post.email}
+            Your new password is ${password}.`
+
+        }
+        mailTransporter.sendMail(details, (err) => {
+            if (err) {
+                res.send(err)
+            }
+            else {
+                res.send("successfull")
+            }
+        })
+
+        res.json(`Student successfully registered ! Password: ${password}`);
     }
+    catch (err) {
+        res.json(err)
+    }
+
+
 })
+router.post("/login", async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const teacher = await Teachers.findOne({ where: { email: email, password: password } });
+        if (teacher) {
+            res.json(teacher);
+        } else {
+            res.status(401).json("Invalid credentials");
+        }
+    } catch (err) {
+        res.json(err)
+    }
+});
 router.get('/findteacher/:id', async (req, res) => {
     const id = req.params.id;
     const findteacher = await Teachers.findOne({ where: { id: id } })

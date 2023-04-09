@@ -15,6 +15,10 @@ app.use("/teachers", teacherRouter);
 app.use("/transactions", transactionRouter);
 app.use("/dashboard", dashboardRouter);
 
+db.sequelize.sync({ force: false }).then(() => {
+    console.log("Sync Done")
+})
+
 
 db.sequelize.authenticate()
     .then(() => {

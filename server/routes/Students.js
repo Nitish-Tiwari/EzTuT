@@ -9,7 +9,7 @@ const Sequelize = require('sequelize');
 const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../config/config.json')[env];
 const nodemailer = require('nodemailer')
-
+const crypto = require('crypto');
 const db = {};
 
 let sequelize;
@@ -27,9 +27,36 @@ router.get('/', async (req, res) => {
 
 router.post("/", async (req, res) => {
     const post = req.body
+    const password = crypto.randomBytes(4).toString('hex');
     try {
-        await Students.create(post);
-        res.json("Student successfully registered !");
+        await Students.create({ ...post, password });
+        let mailTransporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: "kakarotgoku1529@gmail.com",
+                pass: "furtoimuiyfdjimn"
+            }
+        })
+        let details = {
+            from: "kakarotgoku1529",
+            to: post.email,
+            subject: 'New Password',
+            text: `
+            Thank You for Joining
+            Your email is ${post.email}
+            Your new password is ${password}.`
+
+        }
+        mailTransporter.sendMail(details, (err) => {
+            if (err) {
+                res.send(err)
+            }
+            else {
+                res.send("successfull")
+            }
+        })
+
+        res.json(`Student successfully registered ! Password: ${password}`);
     }
     catch (err) {
         res.json(err)
@@ -37,6 +64,21 @@ router.post("/", async (req, res) => {
 
 
 })
+
+router.post("/login", async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const student = await Students.findOne({ where: { email: email, password: password } });
+        if (student) {
+            res.json(student);
+        } else {
+            res.status(401).json("Invalid credentials");
+        }
+    } catch (err) {
+        res.json(err)
+    }
+});
+
 router.get('/findstudent/:id', async (req, res) => {
     const id = req.params.id;
     const findstudent = await Students.findOne({ where: { id: id } })

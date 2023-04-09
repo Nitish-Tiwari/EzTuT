@@ -33,111 +33,6 @@ router.get("/", async (req, res) => {
     });
 
 })
-// router.get('/tranctiondetail/:dateRange', async (req, res) => {
-
-//     const dateRange = req.params.dateRange;
-
-//     // get the start and end dates based on the dateRange parameter
-//     let startDate, endDate;
-//     const now = moment();
-//     const startOfToday = moment().startOf('day').format('YYYY-MM-DD HH:mm:ss');
-//     const endOfToday = moment().endOf('day').format('YYYY-MM-DD HH:mm:ss');
-//     const yesterday = moment().subtract(1, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss');
-//     const thisWeekStart = moment().startOf('week').format('YYYY-MM-DD HH:mm:ss');
-//     const thisWeekEnd = moment().endOf('week').format('YYYY-MM-DD HH:mm:ss');
-//     const thisMonthStart = moment().startOf('month').format('YYYY-MM-DD HH:mm:ss');
-//     const thisMonthEnd = moment().endOf('month').format('YYYY-MM-DD HH:mm:ss');
-//     const thisYearStart = moment().startOf('year').format('YYYY-MM-DD HH:mm:ss');
-//     const thisYearEnd = moment().endOf('year').format('YYYY-MM-DD HH:mm:ss');
-//     console.log(startOfToday, endOfToday, yesterday, thisYearStart)
-
-//     switch (dateRange) {
-//         case 'today':
-//             startDate = startOfToday;
-//             endDate = endOfToday;
-//             break;
-//         case 'yesterday':
-//             startDate = yesterday;
-//             endDate = yesterday;
-//             break;
-//         case 'thisWeek':
-//             startDate = thisWeekStart;
-//             endDate = thisWeekEnd;
-//             break;
-//         case 'thisMonth':
-//             startDate = thisMonthStart;
-//             endDate = thisMonthEnd;
-//             break;
-//         case 'thisYear':
-//             startDate = thisYearStart;
-//             endDate = thisYearEnd;
-//             break;
-//         default:
-//             startDate = startOfToday;
-//             endDate = thisYearStart;
-//     }
-
-
-//     Transactions.findAll({
-//         where: {
-//             createdAt: {
-//                 [Op.between]: [endOfToday, startOfToday]
-//             }
-//         }
-//     }).then(transactions => {
-
-//         // calculate income and expense totals
-//         let income = 0;
-//         let expense = 0;
-//         transactions.forEach(transaction => {
-//             if (transaction.typeofamount === 'income') {
-//                 income += transaction.amount;
-//             } else {
-//                 expense += transaction.amount;
-//             }
-//         });
-//         if (dateRange === 'today' || dateRange === 'yesterday') {
-//             const breakdown = [];
-//             const hours = [];
-//             for (let i = 0; i < 24; i++) {
-//                 hours.push(i < 10 ? `0${i}:00` : `${i}:00`);
-//                 breakdown.push({ hours: hours[i], income: 0, expense: 0 });
-//             }
-//             transactions.forEach(transaction => {
-
-//                 const hour = moment(transaction.createdAt).hour();
-//                 console.log(transaction.createdAt, hour, "hour")
-//                 const index = hours.indexOf(`${hour}:00`);
-
-//                 if (transaction.typeofamount === 'income') {
-//                     breakdown[index].income += transaction.amount;
-//                 } else {
-//                     breakdown[index].expense += transaction.amount;
-//                 }
-//             });
-//             res.json(breakdown);
-//         }
-//         // if (dateRange === "thisweek" || dateRange === "lastweek") {
-//         //     const breakdown = [];
-//         //     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-//         //     for (let i = 0; i < 7; i++) {
-//         //         breakdown.push({ day: days[i], income: 0, expense: 0 });
-//         //     }
-//         //     transactions.forEach(transaction => {
-//         //         const day = new Date(transaction.createdAt).getDay();
-//         //         breakdown[day].income += transaction.typeofamount === 'income' ? transaction.amount : 0;
-//         //         breakdown[day].expense += transaction.typeofamount === 'expense' ? transaction.amount : 0;
-//         //     });
-//         //     res.json(breakdown);
-//         // }
-//         else {
-//             res.json({ income, expense });
-//         }
-//     }).catch(error => {
-//         console.log(error);
-//         res.status(500).json({ message: 'Error occurred while fetching transactions' });
-//     })
-// })
 router.get('/tranctiondetail/:dateRange', async (req, res) => {
     const dateRange = req.params.dateRange;
 
@@ -223,9 +118,15 @@ router.get('/tranctiondetail/:dateRange', async (req, res) => {
             const hourlyTransactions = [];
 
             for (let i = 0; i < 24; i++) {
-                const start = new Date(todayStart.getTime() + i * 60 * 60 * 1000);
-                const end = new Date(todayStart.getTime() + (i + 1) * 60 * 60 * 1000 - 1);
-
+                let start, end;
+                if (dateRange === 'today') {
+                    start = new Date(todayStart.getTime() + i * 60 * 60 * 1000);
+                    end = new Date(todayStart.getTime() + (i + 1) * 60 * 60 * 1000 - 1);
+                }
+                if (dateRange === 'yesterday') {
+                    start = new Date(yesterdayStart.getTime() + i * 60 * 60 * 1000);
+                    end = new Date(yesterdayStart.getTime() + (i + 1) * 60 * 60 * 1000 - 1);
+                }
                 const hourTransactions = {
                     date: `${i.toString().padStart(2, '0')}:00`,
                     income: 0,
@@ -233,11 +134,14 @@ router.get('/tranctiondetail/:dateRange', async (req, res) => {
                 };
 
                 for (const transaction of transactions) {
+
                     if (transaction.createdAt >= start && transaction.createdAt <= end) {
 
                         if (transaction.typeofamount === 'income') {
+
                             hourTransactions.income += transaction.amount;
                         } else {
+
                             hourTransactions.expense += transaction.amount;
                         }
                     }
@@ -253,8 +157,15 @@ router.get('/tranctiondetail/:dateRange', async (req, res) => {
             const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
             for (let i = 0; i < 7; i++) {
-                const start = new Date(startOfWeek.getTime() + (i * 24 * 60 * 60 * 1000));
-                const end = new Date(startOfWeek.getTime() + ((i + 1) * 24 * 60 * 60 * 1000 - 1));
+                let start, end;
+                if (dateRange === 'thisweek') {
+                    start = new Date(startOfWeek.getTime() + (i * 24 * 60 * 60 * 1000));
+                    end = new Date(startOfWeek.getTime() + ((i + 1) * 24 * 60 * 60 * 1000 - 1));
+                }
+                if (dateRange === 'lastweek') {
+                    start = new Date(startOfLastWeek.getTime() + (i * 24 * 60 * 60 * 1000));
+                    end = new Date(startOfLastWeek.getTime() + ((i + 1) * 24 * 60 * 60 * 1000 - 1));
+                }
 
                 const dayTransactions = {
                     date: daysOfWeek[i],
@@ -280,7 +191,7 @@ router.get('/tranctiondetail/:dateRange', async (req, res) => {
         if (dateRange === 'thismonth') {
             const dailyTransactions = [];
             const daysOfMonth = [];
-            const totalDays = endOfMonth.getDate();
+            const totalDays = endOfLastMonth.getDate();
 
             for (let i = 1; i <= totalDays; i++) {
                 daysOfMonth.push(new Date(today.getFullYear(), today.getMonth(), i));
